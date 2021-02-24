@@ -1,11 +1,0 @@
-
-p
-java:S3776Ã"RRefactor this method to reduce its Cognitive Complexity from 43 to the 15 allowed.(Çµí‘8† ±ýü.
-o
-java:S3776:"RRefactor this method to reduce its Cognitive Complexity from 38 to the 15 allowed.(å¢ÅÕ8Ú”Àýü.
-^	java:S125Î"<This block of commented-out lines of code should be removed.(„¢†þþÿÿÿÿ8† ±ýü.
-]	java:S125m"<This block of commented-out lines of code should be removed.(õ–ôÄùÿÿÿÿ8Ú”Àýü.
-H
-java:S1172:"+Remove this unused method parameter "year".(å¢ÅÕ8Ú”Àýü.
-c
-java:S3457"AFormat specifiers should be used instead of string concatenation.(È¯é¿ÿÿÿÿÿ8çÇÜÕü.
