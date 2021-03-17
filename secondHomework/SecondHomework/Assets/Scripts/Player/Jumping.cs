@@ -33,7 +33,6 @@ public class Jumping : MonoBehaviour
                                                   0.1f, 
                                                   layerMask
                                                   );
-        Debug.Log(raycastHit.collider);
         return raycastHit.collider != null;
     }
 }
