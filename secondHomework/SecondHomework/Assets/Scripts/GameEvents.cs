@@ -12,12 +12,31 @@ public class GameEvents : MonoBehaviour
         current = this;
     }
 
-    public event Action<int> onKeyPickUp;
+    public event Action<int> OnKeyPickUp;
     public void keyPickUp(int id)
     {
-        if (onKeyPickUp != null)
+        if (OnKeyPickUp != null)
         {
-            onKeyPickUp(id);
+            OnKeyPickUp(id);
+        }
+    }
+
+    public event Action OnJumpFromSpring;
+    public void jumpFromSpring()
+    {
+        if (OnJumpFromSpring != null)
+        {
+            OnJumpFromSpring();
+        }
+    }
+
+    public event Action OnFallingToDeath;
+
+    public void fallingToDeath()
+    {
+        if (OnFallingToDeath != null)
+        {
+            OnFallingToDeath();
         }
     }
 }

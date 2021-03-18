@@ -15,13 +15,22 @@ public class Jumping : MonoBehaviour
     {
         rigidbody2d = transform.GetComponent<Rigidbody2D>();
         boxCollider2d = transform.GetComponent<BoxCollider2D>();
+        GameEvents.current.OnJumpFromSpring += jumpingFromSpring;
     }
     void Update()
     {
         if (isGrounded() && Input.GetKeyDown(KeyCode.Space))
         {
-            //animator.SetFloat("Vertical", Input.GetAxis("Vertical"));
             rigidbody2d.velocity = Vector2.up * 10f;
+        }
+
+        if (isGrounded())
+        {
+            animator.SetBool("inTheAir", false);
+        }
+        else
+        {
+            animator.SetBool("inTheAir", true);
         }
     }
     bool isGrounded()
@@ -34,5 +43,14 @@ public class Jumping : MonoBehaviour
                                                   layerMask
                                                   );
         return raycastHit.collider != null;
+    }
+    private void jumpingFromSpring()
+    {
+        rigidbody2d.velocity = Vector2.up * 15f;
+    }
+
+    private void OnDestroy()
+    {
+        GameEvents.current.OnJumpFromSpring -= jumpingFromSpring;
     }
 }

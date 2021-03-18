@@ -8,15 +8,18 @@ public class PickupKey : MonoBehaviour
 
     private void Start()
     {
-        GameEvents.current.onKeyPickUp += onKeyPickUp;
+        GameEvents.current.OnKeyPickUp += onKeyPickUp;
     }
-
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        GameEvents.current.keyPickUp(id);
+    }
     private void onKeyPickUp(int id)
     {
         if (id == this.id)
         {
             Destroy(gameObject);
-            GameEvents.current.onKeyPickUp -= onKeyPickUp;
+            GameEvents.current.OnKeyPickUp -= onKeyPickUp;
         }
     }
 }
