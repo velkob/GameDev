@@ -4,14 +4,19 @@ using UnityEngine;
 
 public class PickupKey : MonoBehaviour
 {
-    //Това мисля, че трябва да е метод, който да се
-    //вика от класа, който действаше като медиатор между всички компоненти
-    //Но поради липсата на такъв, съм направил логиката по извикването на метода тук
-    private void OnCollisionEnter2D(Collision2D collision)
+     public int id;
+
+    private void Start()
     {
-        if (collision.gameObject.name.Equals("Tim"))
+        GameEvents.current.onKeyPickUp += onKeyPickUp;
+    }
+
+    private void onKeyPickUp(int id)
+    {
+        if (id == this.id)
         {
             Destroy(gameObject);
+            GameEvents.current.onKeyPickUp -= onKeyPickUp;
         }
     }
 }
