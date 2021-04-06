@@ -30,13 +30,13 @@ public class GameEvents : MonoBehaviour
         }
     }
 
-    public event Action OnFallingToDeath;
+    public event Action OnDying;
 
-    public void fallingToDeath()
+    public void Dying()
     {
-        if (OnFallingToDeath != null)
+        if (OnDying != null)
         {
-            OnFallingToDeath();
+            OnDying();
         }
     }
 }

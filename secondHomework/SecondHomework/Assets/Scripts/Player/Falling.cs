@@ -5,13 +5,25 @@ using UnityEngine;
 public class Falling : MonoBehaviour
 {
     private float deathBoarder = -3f;
-    
-     void Update()
+
+    private void Start()
+    {
+        GameEvents.current.OnDying += resetPosition;   
+    }
+    void Update()
     {
         if (transform.position.y <= deathBoarder)
         {
-            GameEvents.current.fallingToDeath();
-            transform.position = new Vector3(0, 0, 0);
+            GameEvents.current.Dying();
         }
+    }
+
+    private void resetPosition()
+    {
+        transform.position = new Vector3(0, 0, 0);
+    }
+    private void OnDestroy()
+    {
+        GameEvents.current.OnDying -= resetPosition;
     }
 }

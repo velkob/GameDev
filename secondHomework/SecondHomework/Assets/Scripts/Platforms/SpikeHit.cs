@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PickupKey : MonoBehaviour
+public class SpikeHit : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Destroy(gameObject);
+        GameEvents.current.Dying();
     }
+
 }
