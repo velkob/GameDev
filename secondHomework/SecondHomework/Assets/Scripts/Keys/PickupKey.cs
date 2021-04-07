@@ -6,6 +6,7 @@ public class PickupKey : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        GameEvents.current.keyPickUp();
         Destroy(gameObject);
     }
 }
