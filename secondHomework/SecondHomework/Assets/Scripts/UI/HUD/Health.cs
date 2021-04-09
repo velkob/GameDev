@@ -18,12 +18,12 @@ public class Health : MonoBehaviour
 
     private void Start()
     {
-        heartsLeft = maxNumberOfHearts - 1;
+        heartsLeft = maxNumberOfHearts;
 
         for (int i = 0; i < maxNumberOfHearts - 1; i++)
         {
             Image currentHeart = Instantiate(HeartImage);
-            currentHeart.transform.SetParent(GameObject.Find("Health").transform);
+            currentHeart.transform.parent = GameObject.Find("Health").transform;
             currentHeart.transform.localScale = new Vector3(1, 1, 1);
         }
 
