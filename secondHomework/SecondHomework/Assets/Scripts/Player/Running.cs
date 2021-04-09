@@ -6,12 +6,23 @@ public class Running : MonoBehaviour
 {
     public Animator animator;
     private float speed = 5;
-    // Update is called once per frame
+
     void Update()
     {
-        animator.SetFloat("Horizontal", Input.GetAxis("Horizontal"));
+        float input = Input.GetAxis("Horizontal");
+
+        animator.SetFloat("Horizontal", input);
         
-        Vector3 horizontal = new Vector3(Input.GetAxis("Horizontal"), 0.0f, 0.0f);
+        Vector3 horizontal = new Vector3(input, 0.0f, 0.0f);
         transform.position = transform.position + horizontal * speed * Time.deltaTime;
+
+        if (input >= 0)
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+        } 
+        else
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
+        }
     }
 }

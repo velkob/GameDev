@@ -42,9 +42,7 @@ public class Jumping : MonoBehaviour
     }
     bool isGrounded()
     {
-        raycastHit = Physics2D.BoxCast(boxCollider2d.bounds.center,
-                                                  boxCollider2d.bounds.size,
-                                                  0f,
+        raycastHit = Physics2D.Raycast(boxCollider2d.bounds.center,
                                                   Vector2.down,
                                                   1f,
                                                   layerMask
@@ -65,11 +63,11 @@ public class Jumping : MonoBehaviour
     {
         if (isGrounded())
         {
-            animator.SetBool("inTheAir", false);
+            animator.SetBool("IsAirborn", false);
         }
         else
         {
-            animator.SetBool("inTheAir", true);
+            animator.SetBool("IsAirborn", true);
         }
     }
     private void OnDestroy()
