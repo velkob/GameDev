@@ -19,7 +19,7 @@ public class EnemyRunning : MonoBehaviour
     void Start()
     {
         speed = 0;
-        rb2d = gameObject.GetComponent<Rigidbody2D>();
+        rb2d = GetComponent<Rigidbody2D>();
         moveLeft = true;
     }
 

@@ -10,9 +10,12 @@ public class EnemyJumping : MonoBehaviour
     [SerializeField]
     private LayerMask layerMask;
 
+    [SerializeField]
+    private Vector2 velocity;
+
     void Start()
     {
-        rigidbody2d = transform.GetComponent<Rigidbody2D>();
+        rigidbody2d = GetComponent<Rigidbody2D>();
         jumpForce = 0;
     }
 
@@ -27,8 +30,13 @@ public class EnemyJumping : MonoBehaviour
 
     private void jump()
     {
-        rigidbody2d.velocity = Vector2.up * jumpForce * 10f;
-        // transform.position = new Vector3(transform.position.x, transform.position.y + jumpForce, transform.position.z);
+        Vector2 newPosition = new Vector2
+        {
+            x = velocity.x,
+            y = velocity.y * jumpForce
+        } * Time.deltaTime + rigidbody2d.position;
+
+        rigidbody2d.MovePosition(newPosition);
     }
 
     bool isGrounded()
