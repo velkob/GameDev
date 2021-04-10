@@ -148,7 +148,7 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: inTheAir
+  - m_Name: IsAirborn
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -176,7 +176,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: inTheAir
+    m_ConditionEvent: IsAirborn
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 0}
@@ -228,7 +228,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: inTheAir
+    m_ConditionEvent: IsAirborn
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -6688365384125576627}
@@ -256,7 +256,7 @@ AnimatorStateTransition:
     m_ConditionEvent: Horizontal
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: inTheAir
+    m_ConditionEvent: IsAirborn
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -4070735470369219007}
@@ -284,7 +284,7 @@ AnimatorStateTransition:
     m_ConditionEvent: Horizontal
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: inTheAir
+    m_ConditionEvent: IsAirborn
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 5273657544302782599}
@@ -366,7 +366,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: -3786452429073189915}
-    m_Position: {x: 190, y: 40, z: 0}
+    m_Position: {x: -110, y: -70, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5273657544302782599}
     m_Position: {x: -20, y: 120, z: 0}
@@ -375,7 +375,7 @@ AnimatorStateMachine:
     m_Position: {x: 440, y: 120, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -6688365384125576627}
-    m_Position: {x: 210, y: -30, z: 0}
+    m_Position: {x: 210, y: 120, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: 3859798151880088531}
@@ -385,8 +385,8 @@ AnimatorStateMachine:
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 230, y: -110, z: 0}
-  m_EntryPosition: {x: 220, y: 130, z: 0}
-  m_ExitPosition: {x: 220, y: 310, z: 0}
+  m_EntryPosition: {x: -80, y: 50, z: 0}
+  m_ExitPosition: {x: 230, y: 310, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: -3786452429073189915}
 --- !u!1101 &9074123420921987346
