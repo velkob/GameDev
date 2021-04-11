@@ -5,9 +5,12 @@ public class AIRunningState : StateMachineBehaviour
     [SerializeField]
     private float startJumping;
 
+    [SerializeField]
+    private float speed;
+
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.GetComponent<EnemyRunning>().setSpeed(3);
+        animator.GetComponent<EnemyRunning>().setSpeed(speed);
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

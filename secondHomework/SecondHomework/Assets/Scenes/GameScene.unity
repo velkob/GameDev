@@ -1069,7 +1069,6 @@ GameObject:
   - component: {fileID: 576214219}
   - component: {fileID: 576214222}
   - component: {fileID: 576214223}
-  - component: {fileID: 576214224}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -1086,7 +1085,7 @@ Transform:
   m_GameObject: {fileID: 576214217}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.06, y: 1.2, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: -1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1035912107}
   m_RootOrder: 0
@@ -1178,13 +1177,13 @@ Rigidbody2D:
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
+  m_UseAutoMass: 1
+  m_Mass: 1.3949999
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 3
   m_Material: {fileID: 0}
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
@@ -1222,22 +1221,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 256
-  velocity: {x: 5, y: 0}
---- !u!114 &576214224
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 576214217}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49f81d06b9aec29489f8a7b1bafe1258, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 256
+  velocity: {x: 2, y: 3}
 --- !u!4 &616910938 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8169143732809982338, guid: a7461935d34face4ba01a7a47f90543f,
