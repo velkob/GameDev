@@ -18,7 +18,7 @@ public class Health : MonoBehaviour
 
     private void Start()
     {
-        heartsLeft = maxNumberOfHearts;
+        heartsLeft = maxNumberOfHearts - 1;
 
         for (int i = 0; i < maxNumberOfHearts - 1; i++)
         {
