@@ -29,26 +29,25 @@ public class EnemyRunning : MonoBehaviour
 
     void FixedUpdate()
     {
-        Vector2 newPosition;
-        if (moveLeft)
-        {
-            newPosition = new Vector2
-            {
-                x = -velocity.x * speed,
-                y = isGrounded() ? velocity.y * jumpForce : velocity.y
-            } * Time.deltaTime + rb2d.position;
+        //Vector2 newPosition;
+        //if (moveLeft)
+        //{
+        //    newPosition = new Vector2
+        //    {
+        //        x = -velocity.x * speed,
+        //        y = velocity.y
+        //    } * Time.deltaTime + rb2d.position;
+        //}
+        //else
+        //{
+        //    newPosition = new Vector2
+        //    {
+        //        x = velocity.x * speed,
+        //        y = velocity.y
+        //    } * Time.deltaTime + rb2d.position;
+        //}
+        //rb2d.MovePosition(newPosition);
 
-        }
-        else
-        {
-            newPosition = new Vector2
-            {
-                x = velocity.x * speed,
-                y = isGrounded() ? velocity.y * jumpForce : velocity.y
-            } * Time.deltaTime + rb2d.position;
-        }
-        
-        rb2d.MovePosition(newPosition);
 
         /*if (moveLeft)
         {
@@ -69,10 +68,24 @@ public class EnemyRunning : MonoBehaviour
             };
         }*/
 
+        if (moveLeft)
+        {
+            rb2d.AddForce(Vector2.left * speed);
+        }
+        else
+        {
+            rb2d.AddForce(Vector2.right * speed);
+        }
+
+        if (isGrounded())
+        {
+            rb2d.AddForce(Vector2.up * jumpForce);
+        }
 
         if (shouldTurn())
         {
             moveLeft = !moveLeft;
+            rb2d.velocity = new Vector2(0, 0);
             transform.localScale = new Vector3(-transform.localScale.x, 1, 1);
         }
     }
