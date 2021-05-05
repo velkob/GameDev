@@ -7,9 +7,11 @@ public class EnemyRunning : MonoBehaviour
 {
 
     private float speed;
+    private float jumpForce;
     private Rigidbody2D rb2d;
     private bool moveLeft;
     private bool reachedLeftMostPoint;
+
 
     [SerializeField]
     private LayerMask layerMask;
@@ -19,43 +21,79 @@ public class EnemyRunning : MonoBehaviour
     void Start()
     {
         speed = 0;
+        jumpForce = 0;
         rb2d = GetComponent<Rigidbody2D>();
         moveLeft = true;
+        reachedLeftMostPoint = false;
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        Vector2 newPosition;
-        if (moveLeft)
-        { 
-            newPosition = new Vector2
+        //Vector2 newPosition;
+        //if (moveLeft)
+        //{
+        //    newPosition = new Vector2
+        //    {
+        //        x = -velocity.x * speed,
+        //        y = velocity.y
+        //    } * Time.deltaTime + rb2d.position;
+        //}
+        //else
+        //{
+        //    newPosition = new Vector2
+        //    {
+        //        x = velocity.x * speed,
+        //        y = velocity.y
+        //    } * Time.deltaTime + rb2d.position;
+        //}
+        //rb2d.MovePosition(newPosition);
+
+
+        /*if (moveLeft)
+        {
+            transform.position = new Vector3
             {
-                x = -velocity.x * speed,
-                y = velocity.y
-            } * Time.deltaTime + rb2d.position;
+                x = transform.position.x - speed * Time.deltaTime,
+                y = transform.position.y,
+                z = transform.position.z
+            };
         }
         else
         {
-            newPosition = new Vector2
+            transform.position = new Vector3
             {
-                x = velocity.x * speed,
-                y = velocity.y
-            } * Time.deltaTime + rb2d.position;
+                x = transform.position.x + speed * Time.deltaTime,
+                y = transform.position.y,
+                z = transform.position.z
+            };
+        }*/
+
+        if (moveLeft)
+        {
+            rb2d.AddForce(Vector2.left * speed);
+        }
+        else
+        {
+            rb2d.AddForce(Vector2.right * speed);
         }
 
-        rb2d.MovePosition(newPosition);
-
+        if (isGrounded())
+        {
+            rb2d.AddForce(Vector2.up * jumpForce);
+        }
 
         if (shouldTurn())
         {
             moveLeft = !moveLeft;
+            rb2d.velocity = new Vector2(0, 0);
+            transform.localScale = new Vector3(-transform.localScale.x, 1, 1);
         }
     }
 
     private bool shouldTurn()
     {
-        BoxCollider2D enemyBox = gameObject.GetComponent<BoxCollider2D>();
-        BoxCollider2D platformBox = gameObject.transform.parent.GetComponent<BoxCollider2D>();
+        BoxCollider2D enemyBox = GetComponent<BoxCollider2D>();
+        BoxCollider2D platformBox = transform.parent.GetComponent<BoxCollider2D>();
         if (reachedLeftMostPoint)
         {
             if (enemyBox.bounds.max.x > platformBox.bounds.max.x)
@@ -74,9 +112,22 @@ public class EnemyRunning : MonoBehaviour
         }
     }
 
+    private bool isGrounded()
+    {
+        RaycastHit2D raycastHit = Physics2D.Raycast(GetComponent<BoxCollider2D>().bounds.center,
+                                                  Vector2.down,
+                                                  1f,
+                                                  layerMask
+                                                  );
+        return raycastHit.collider != null;
+    }
+
     public void setSpeed(float newSpeed)
     {
         speed = newSpeed;
     }
-
+    public void setJumpForce(float newJumpForce)
+    {
+        jumpForce = newJumpForce;
+    }
 }
