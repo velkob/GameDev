@@ -5,26 +5,45 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     [SerializeField]
-    private float speed;
-
-    [SerializeField]
     private Vector3 direction;
 
+    [SerializeField]
+    private GameObject turnTile;
+
     private Vector3 destination;
+
+    private RaycastHit turnTileRayCast;
 
     private void Start()
     {
         // direction = Vector3.forward;
-        destination = transform.position;
+        destination = transform.localPosition;
     }
     void Update()
     {
+
         if (Input.GetMouseButtonDown(0))
         {
-            // rigidbody.velocity = direction*moveDistance*Time.deltaTime;
-            destination = transform.position + direction * ((Random.value * 10) % 6);
-            Debug.Log(direction * ((Random.value * 10) % 6));
+            destination = transform.localPosition + direction * Random.Range(1, 7);
         }
-        transform.position = Vector3.Lerp(transform.position, destination, speed*Time.deltaTime);
+        transform.localPosition = Vector3.Lerp(transform.localPosition, destination, 0.9f*Time.deltaTime);
+
+        if (Vector3.Distance(transform.localPosition,destination) < 0.0001f)
+        {
+            transform.localPosition = destination;
+        }
+        
+        //transform.localPosition = destination;
+        //if (CheckForTurn())
+        //{
+        //    Debug.Log(turnTileRayCast.transform.eulerAngles);
+        //    Debug.Log(turnTileRayCast.transform.localEulerAngles);
+        //}
     }
+
+    //private bool CheckForTurn()
+    //{
+    //    Physics.Raycast(transform.position, Vector3.down,out turnTileRayCast,1);
+    //    return turnTileRayCast.collider.gameObject == turnTile;
+    //}
 }

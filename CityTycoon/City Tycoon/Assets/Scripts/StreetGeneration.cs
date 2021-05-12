@@ -37,14 +37,14 @@ public class StreetGeneration : MonoBehaviour
 
     void Start()
     {
-        Street street = new Street(new Vector3(500, 0, 500), Vector3.one, Vector3.one);
-        for (int i = 0; i < streetCount; i++)
-        {
-            GameObject streetObj = new GameObject(streetNames[UnityEngine.Random.Range(0, streetNames.Length)]);
-            streetObj.transform.parent = transform;
+        //Street street = new Street(new Vector3(500, 0, 500), Vector3.one, Vector3.one);
+        //for (int i = 0; i < streetCount; i++)
+        //{
+        //    GameObject streetObj = new GameObject(streetNames[UnityEngine.Random.Range(0, streetNames.Length)]);
+        //    streetObj.transform.parent = transform;
 
-            street = GenerateStreet(street, UnityEngine.Random.Range(10, 40), streetObj);
-        }
+        //    street = GenerateStreet(street, UnityEngine.Random.Range(10, 40), streetObj);
+        //}
     }
 
     private Street GenerateStreet(Street street, int numberOfTiles, GameObject parent)
