@@ -12,7 +12,7 @@ public class Movement : MonoBehaviour
 
     private Vector3 destination;
 
-    private RaycastHit turnTileRayCast;
+    public bool isMoving;
 
     private void Start()
     {
@@ -22,15 +22,9 @@ public class Movement : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetMouseButtonDown(0))
+        if (isMoving)
         {
-            destination = transform.localPosition + direction * Random.Range(1, 7);
-        }
-        transform.localPosition = Vector3.Lerp(transform.localPosition, destination, 0.9f*Time.deltaTime);
-
-        if (Vector3.Distance(transform.localPosition,destination) < 0.0001f)
-        {
-            transform.localPosition = destination;
+            Move();
         }
         
         //transform.localPosition = destination;
@@ -41,6 +35,23 @@ public class Movement : MonoBehaviour
         //}
     }
 
+    public void StartMoving()
+    {
+        isMoving = true;
+        destination = transform.localPosition + direction * Random.Range(1, 1);
+    }
+
+    private void Move()
+    {
+        transform.localPosition = Vector3.Lerp(transform.localPosition, destination, 0.9f * Time.deltaTime);
+        if (Vector3.Distance(transform.localPosition, destination) < 0.01f)
+        {
+            transform.localPosition = destination;
+            isMoving = false;
+        }
+    }
+
+    
     //private bool CheckForTurn()
     //{
     //    Physics.Raycast(transform.position, Vector3.down,out turnTileRayCast,1);
