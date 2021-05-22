@@ -43,7 +43,7 @@ public class Movement : MonoBehaviour
 
     private void Move()
     {
-        transform.localPosition = Vector3.Lerp(transform.localPosition, destination, 0.9f * Time.deltaTime);
+        transform.localPosition = Vector3.Lerp(transform.localPosition, destination, 9f * Time.deltaTime); // o.9 is for production
         if (Vector3.Distance(transform.localPosition, destination) < 0.01f)
         {
             transform.localPosition = destination;

@@ -8,7 +8,7 @@ public class ActivateOffer : MonoBehaviour
     void Start()
     {
         BusinessEvents.current.OnForSaleStep += Activate;
-        Deactivate();
+        //Deactivate();
     }
 
     private void Activate()
@@ -16,10 +16,10 @@ public class ActivateOffer : MonoBehaviour
         gameObject.SetActive(true);
     }
 
-    public void Deactivate()
-    {
-        gameObject.SetActive(false);
-    }
+    //public void Deactivate()
+    //{
+    //    gameObject.SetActive(false);
+    //}
 
     private void OnDestroy()
     {

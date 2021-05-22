@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +10,9 @@ public class TurnManagment : MonoBehaviour
 
     [SerializeField]
     private GameObject SaleOffer;
+
+    [SerializeField]
+    private GameObject UpgradeOffer;
 
     [SerializeField]
     private GameObject player;
@@ -33,10 +37,10 @@ public class TurnManagment : MonoBehaviour
     public void MovePlayer()
     {
         rollButton.SetActive(false);
-        
+
         // calls Movement.Move()
         player.GetComponent<Movement>().StartMoving();
-                //waits for movement to finish and calls AfterMovementEvent
+        //waits for movement to finish and calls AfterMovementEvent
         StartCoroutine(WaitForPlayerToStop());
     }
 
@@ -44,32 +48,50 @@ public class TurnManagment : MonoBehaviour
     {
         //Locate whats left of the player
         GameObject buildingOnTheLeft = player.GetComponent<LocateObject>().GetObject();
-        Debug.Log(player.GetComponent<LocateObject>().GetObject().tag);
-        //if the building is ForSale sign
-        if (buildingOnTheLeft.CompareTag("ForSale"))
-        {
-            BusinessEvents.current.ForSaleStep();
-        }
 
-        //Waits for player to Choose an option
-        //offer buttons call EndTurn();
+        if (buildingOnTheLeft.CompareTag("ForSale")) //if the building is ForSale sign
+        {
+            SaleOffer.SetActive(true);
+            StartCoroutine(WaitForPlayerToChooseForSale(buildingOnTheLeft)); //Waits for player to choose an option
+        }
     }
+
+
 
     public void EndTurn()
     {
         SaleOffer.SetActive(false);
+        UpgradeOffer.SetActive(false);
         StartTurn();
     }
 
     private IEnumerator WaitForPlayerToStop()
     {
-        while(player.GetComponent<Movement>().isMoving)
+        while (player.GetComponent<Movement>().isMoving)
         {
-            Debug.Log(1);
             yield return null;
         }
-        Debug.Log(1);
         AfterMovementEvent();
 
+    }
+
+    private IEnumerator WaitForPlayerToChooseForSale(GameObject buildingOnTheLeft)
+    {
+        while (SaleOffer.activeSelf)
+        {
+            yield return null;
+        }
+        
+        if (buildingOnTheLeft.GetComponent<Upgrade>().CheckIfUpgradable()) // check if the building has neighbours that belong to the same player and can be upgraded
+        {
+            UpgradeOffer.SetActive(true); //Waits for player to Choose an option
+        }
+
+        while (UpgradeOffer.activeSelf)
+        {
+            yield return null;
+        }
+
+        EndTurn();
     }
 }

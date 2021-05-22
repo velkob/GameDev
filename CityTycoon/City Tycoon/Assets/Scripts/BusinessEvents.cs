@@ -24,4 +24,11 @@ public class BusinessEvents : MonoBehaviour
     {
         OnBuyingProperty?.Invoke();
     }
+
+    public event Action OnUpgradingProperty;
+
+    public void UpgradingProperty()
+    {
+        OnUpgradingProperty?.Invoke();
+    }
 }

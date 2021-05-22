@@ -16,7 +16,7 @@ public class BuildingHouse : MonoBehaviour
     private void BuildAHouse()
     {
         GameObject go = GameObject.Find("Player").GetComponent<LocateObject>().GetObject();
-
+        go.GetInstanceID();
         if (go.CompareTag("ForSale") && go.GetComponent<PropertyInfo>().getId() == gameObject.GetComponent<PropertyInfo>().getId())
         {
             Instantiate(house1, new Vector3(transform.position.x, 0, transform.position.z), Quaternion.Euler(0, 0, 0), transform.parent);
