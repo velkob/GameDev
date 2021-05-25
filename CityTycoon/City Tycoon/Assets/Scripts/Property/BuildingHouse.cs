@@ -8,16 +8,17 @@ public class BuildingHouse : MonoBehaviour
     [SerializeField]
     private GameObject house1;
 
+    [SerializeField]
+    private int price;
     void Start()
     {
-        BusinessEvents.current.OnBuyingProperty += BuildAHouse;
+        //BusinessEvents.current.OnBuyingProperty += BuildAHouse;
     }
 
-    private void BuildAHouse()
+    public void BuildAHouse()
     {
-        GameObject go = GameObject.Find("Player").GetComponent<LocateObject>().GetObject();
-        go.GetInstanceID();
-        if (go.CompareTag("ForSale") && go.GetComponent<PropertyInfo>().getId() == gameObject.GetComponent<PropertyInfo>().getId())
+        GameObject buildingOnTheLeft = GameObject.Find("Player").GetComponent<LocateObject>().GetObject();
+        if (buildingOnTheLeft.CompareTag("ForSale") && buildingOnTheLeft.GetComponent<PropertyInfo>().getId() == gameObject.GetComponent<PropertyInfo>().getId())
         {
             Instantiate(house1, new Vector3(transform.position.x, 0, transform.position.z), Quaternion.Euler(0, 0, 0), transform.parent);
             gameObject.SetActive(false);
@@ -26,6 +27,6 @@ public class BuildingHouse : MonoBehaviour
 
     private void OnDestroy()
     {
-        BusinessEvents.current.OnBuyingProperty -= BuildAHouse;
+        //BusinessEvents.current.OnBuyingProperty -= BuildAHouse;
     }
 }

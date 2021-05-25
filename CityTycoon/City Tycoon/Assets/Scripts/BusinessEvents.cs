@@ -18,11 +18,11 @@ public class BusinessEvents : MonoBehaviour
         OnForSaleStep?.Invoke();
     }
 
-    public event Action OnBuyingProperty;
+    public event Action<int> OnBuyingProperty;
 
-    public void BuyingProperty()
+    public void BuyingProperty(int price)
     {
-        OnBuyingProperty?.Invoke();
+        OnBuyingProperty?.Invoke(price);
     }
 
     public event Action OnUpgradingProperty;

@@ -6,9 +6,11 @@ public class Upgrade : MonoBehaviour
     [SerializeField]
     GameObject[] Houses;
 
+    [SerializeField]
+    int[] prices;
     private void Start()
     {
-        BusinessEvents.current.OnUpgradingProperty += UpgradeBuilding;
+       // BusinessEvents.current.OnUpgradingProperty += UpgradeBuilding;
     }
 
     public bool CheckIfUpgradable()
@@ -44,18 +46,19 @@ public class Upgrade : MonoBehaviour
         return false;
     }
 
-    void UpgradeBuilding()
+    public int UpgradeBuilding()
     {
         GameObject go = GameObject.Find("Player").GetComponent<LocateObject>().GetObject();
 
         if (go.GetComponent<PropertyInfo>().getId() == gameObject.GetComponent<PropertyInfo>().getId())
         {
+            int number = 0;
             GameObject left, right;
             left = CheckLeftNeighbour();
             right = CheckRightNeighbour();
             if (left && right != null)
             {
-                int number = GetHouseTier(left) + GetHouseTier(right);
+                number = GetHouseTier(left) + GetHouseTier(right);
                 left.SetActive(false);
                 right.SetActive(false);
                 gameObject.SetActive(false);
@@ -66,7 +69,7 @@ public class Upgrade : MonoBehaviour
             }
             else if (right != null)
             {
-                int number = GetHouseTier(right);
+                number = GetHouseTier(right);
                 right.SetActive(false);
                 gameObject.SetActive(false);
                 Instantiate(Houses[number + 1],
@@ -77,7 +80,7 @@ public class Upgrade : MonoBehaviour
             }
             else if (left != null)
             {
-                int number = GetHouseTier(left);
+                number = GetHouseTier(left);
                 left.SetActive(false);
                 gameObject.SetActive(false);
                 Instantiate(Houses[number],
@@ -86,7 +89,9 @@ public class Upgrade : MonoBehaviour
                     transform.parent);
 
             }
+            return prices[number];
         }
+        return -1;
     }
 
     private int GetHouseTier(GameObject house)

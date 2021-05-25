@@ -81,7 +81,7 @@ public class TurnManagment : MonoBehaviour
         {
             yield return null;
         }
-        
+
         if (buildingOnTheLeft.GetComponent<Upgrade>().CheckIfUpgradable()) // check if the building has neighbours that belong to the same player and can be upgraded
         {
             UpgradeOffer.SetActive(true); //Waits for player to Choose an option
@@ -93,5 +93,19 @@ public class TurnManagment : MonoBehaviour
         }
 
         EndTurn();
+    }
+
+    public void BuildHouse()
+    {
+        GameObject buildingOnTheLeft = player.GetComponent<LocateObject>().GetObject();
+        buildingOnTheLeft.GetComponent<BuildingHouse>().BuildAHouse();
+        player.GetComponent<PlayerInfo>().DecreaseMoney(buildingOnTheLeft.GetComponent<PropertyInfo>().getPrice());
+    }
+
+    public void UpgradeHouse()
+    {
+        GameObject buildingOnTheLeft = player.GetComponent<LocateObject>().GetObject();
+        int price = buildingOnTheLeft.GetComponent<Upgrade>().UpgradeBuilding();
+        player.GetComponent<PlayerInfo>().DecreaseMoney(price);
     }
 }

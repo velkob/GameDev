@@ -170,6 +170,7 @@ MonoBehaviour:
   - {fileID: 1441186220738132, guid: 150fadf88f51c2b4b9b7b62af8d39db9, type: 3}
   - {fileID: 1444809901064490, guid: 4410dff019705d648959a9ceea02bfbb, type: 3}
   - {fileID: 1700467701915904}
+  prices: 64000000c80000009001000058020000e8030000dc050000
 --- !u!65 &507945851029938955
 BoxCollider:
   m_ObjectHideFlags: 0

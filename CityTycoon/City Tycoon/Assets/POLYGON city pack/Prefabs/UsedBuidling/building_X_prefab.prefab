@@ -53,6 +53,7 @@ MonoBehaviour:
   - {fileID: 1441186220738132, guid: 150fadf88f51c2b4b9b7b62af8d39db9, type: 3}
   - {fileID: 1444809901064490, guid: 4410dff019705d648959a9ceea02bfbb, type: 3}
   - {fileID: 1700467701915904, guid: 332e08e35cda1b84e8c36c123299b8ac, type: 3}
+  prices: 64000000c80000009001000058020000e8030000dc050000
 --- !u!114 &5912974528754612076
 MonoBehaviour:
   m_ObjectHideFlags: 0
