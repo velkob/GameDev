@@ -46,7 +46,7 @@ public class Upgrade : MonoBehaviour
         return false;
     }
 
-    public int UpgradeBuilding()
+    public int GetPrice()
     {
         GameObject go = GameObject.Find("Player").GetComponent<LocateObject>().GetObject();
 
@@ -56,6 +56,34 @@ public class Upgrade : MonoBehaviour
             GameObject left, right;
             left = CheckLeftNeighbour();
             right = CheckRightNeighbour();
+            if (left && right != null)
+            {
+                number = GetHouseTier(left) + GetHouseTier(right);
+            }
+            else if (right != null)
+            {
+                number = GetHouseTier(right);
+
+            }
+            else if (left != null)
+            {
+                number = GetHouseTier(left);
+            }
+            return prices[number];
+        }
+        return -1;
+    }
+
+    public void UpgradeBuilding()
+    {
+        GameObject go = GameObject.Find("Player").GetComponent<LocateObject>().GetObject();
+
+        if (go.GetComponent<PropertyInfo>().getId() == gameObject.GetComponent<PropertyInfo>().getId())
+        {
+            GameObject left, right;
+            left = CheckLeftNeighbour();
+            right = CheckRightNeighbour();
+            int number;
             if (left && right != null)
             {
                 number = GetHouseTier(left) + GetHouseTier(right);
@@ -89,9 +117,7 @@ public class Upgrade : MonoBehaviour
                     transform.parent);
 
             }
-            return prices[number];
         }
-        return -1;
     }
 
     private int GetHouseTier(GameObject house)
@@ -127,8 +153,6 @@ public class Upgrade : MonoBehaviour
         hit = Physics.BoxCast(transform.position + Vector3.up, transform.localScale * 3, Vector3.left, out raycastHit, transform.rotation, 30);
         string raycastHitTag = hit != false ? Regex.Match(raycastHit.collider.tag, "T\\dBuilding").Value : "DefinetlyNotATagName";
         raycastHitTag = string.IsNullOrEmpty(raycastHitTag) ? "DefinetlyNotATagName" : raycastHitTag;
-
-        Debug.Log(hit != false ? raycastHit.collider.tag : "");
 
         if (hit == true && raycastHit.collider.CompareTag(raycastHitTag))
         {

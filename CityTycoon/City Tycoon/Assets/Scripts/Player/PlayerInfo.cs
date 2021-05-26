@@ -28,4 +28,9 @@ public class PlayerInfo : MonoBehaviour
     {
         money -= number;
     }
+
+    public void IncreaceMoney(int number)
+    {
+        money += number;
+    }
 }

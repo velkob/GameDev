@@ -15,6 +15,9 @@ public class TurnManagment : MonoBehaviour
     private GameObject UpgradeOffer;
 
     [SerializeField]
+    private GameObject InsufficentFunds;
+
+    [SerializeField]
     private GameObject player;
 
     void Start()
@@ -52,7 +55,12 @@ public class TurnManagment : MonoBehaviour
         if (buildingOnTheLeft.CompareTag("ForSale")) //if the building is ForSale sign
         {
             SaleOffer.SetActive(true);
-            StartCoroutine(WaitForPlayerToChooseForSale(buildingOnTheLeft)); //Waits for player to choose an option
+            StartCoroutine(WaitForPlayerToChooseForSale()); //Waits for player to choose an option
+        }
+        else if (buildingOnTheLeft.CompareTag("Bank"))
+        {
+            player.GetComponent<PlayerInfo>().IncreaceMoney(1000);
+            EndTurn();
         }
     }
 
@@ -75,19 +83,22 @@ public class TurnManagment : MonoBehaviour
 
     }
 
-    private IEnumerator WaitForPlayerToChooseForSale(GameObject buildingOnTheLeft)
+    private IEnumerator WaitForPlayerToChooseForSale()
     {
         while (SaleOffer.activeSelf)
         {
             yield return null;
         }
 
-        if (buildingOnTheLeft.GetComponent<Upgrade>().CheckIfUpgradable()) // check if the building has neighbours that belong to the same player and can be upgraded
+        GameObject buildingOnTheLeft = player.GetComponent<LocateObject>().GetObject();
+        if (buildingOnTheLeft.GetComponent<Upgrade>().CheckIfUpgradable() &&
+            buildingOnTheLeft.GetComponent<Upgrade>().GetPrice() < player.GetComponent<PlayerInfo>().getMoney() &&
+            !buildingOnTheLeft.CompareTag("ForSale")) // check if the building has neighbours that belong to the same player and can be upgraded
         {
             UpgradeOffer.SetActive(true); //Waits for player to Choose an option
         }
 
-        while (UpgradeOffer.activeSelf)
+        while (UpgradeOffer.activeSelf || InsufficentFunds.activeSelf)
         {
             yield return null;
         }
@@ -98,14 +109,26 @@ public class TurnManagment : MonoBehaviour
     public void BuildHouse()
     {
         GameObject buildingOnTheLeft = player.GetComponent<LocateObject>().GetObject();
+        int price = buildingOnTheLeft.GetComponent<PropertyInfo>().getPrice();
+        if (price > player.GetComponent<PlayerInfo>().getMoney())
+        {
+            InsufficentFunds.SetActive(true);
+            return;
+        }
         buildingOnTheLeft.GetComponent<BuildingHouse>().BuildAHouse();
-        player.GetComponent<PlayerInfo>().DecreaseMoney(buildingOnTheLeft.GetComponent<PropertyInfo>().getPrice());
+        player.GetComponent<PlayerInfo>().DecreaseMoney(price);
     }
 
     public void UpgradeHouse()
     {
         GameObject buildingOnTheLeft = player.GetComponent<LocateObject>().GetObject();
-        int price = buildingOnTheLeft.GetComponent<Upgrade>().UpgradeBuilding();
+        int price = buildingOnTheLeft.GetComponent<Upgrade>().GetPrice();
+        if (price > player.GetComponent<PlayerInfo>().getMoney())
+        {
+            InsufficentFunds.SetActive(true);
+            return;
+        }
+        buildingOnTheLeft.GetComponent<Upgrade>().UpgradeBuilding();
         player.GetComponent<PlayerInfo>().DecreaseMoney(price);
     }
 }
