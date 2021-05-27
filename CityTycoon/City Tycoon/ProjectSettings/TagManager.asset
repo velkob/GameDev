@@ -3,7 +3,18 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - ForSale
+  - Building
+  - T1Building
+  - T3Building
+  - T4Building
+  - T5Building
+  - T6Building
+  - DefinetlyNotATagName
+  - T2Building
+  - T2Bulding
+  - Bank
   layers:
   - Default
   - TransparentFX
