@@ -19,7 +19,7 @@ public class GridSceneStreetGen : MonoBehaviour
         GameObject parent = new GameObject("Oxford Str");
         parent.transform.parent = transform;
         parent.transform.localScale = Vector3.one;
-        GenerateStreet(parent);
+        //GenerateStreet(parent);
     }
 
     private void GenerateStreet(GameObject parent)

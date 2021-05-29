@@ -10,23 +10,29 @@ public class Movement : MonoBehaviour
     [SerializeField]
     private GameObject turnTile;
 
-    private Vector3 destination;
+    private Vector3[] destination;
+
+    private int tilesMoved;
 
     public bool isMoving;
 
     private void Start()
     {
         // direction = Vector3.forward;
-        destination = transform.localPosition;
+        destination = new Vector3[6];
     }
     void Update()
     {
 
         if (isMoving)
         {
-            Move();
+            for (int i = 0; i < tilesMoved; i++)
+            {
+                isMoving = true;
+                transform.localPosition = Move(destination[i]).GetEnumerator().Current;
+            }
         }
-        
+
         //transform.localPosition = destination;
         //if (CheckForTurn())
         //{
@@ -38,23 +44,33 @@ public class Movement : MonoBehaviour
     public void StartMoving()
     {
         isMoving = true;
-        destination = transform.localPosition + direction * Random.Range(1, 1);
-    }
-
-    private void Move()
-    {
-        transform.localPosition = Vector3.Lerp(transform.localPosition, destination, 9f * Time.deltaTime); // o.9 is for production
-        if (Vector3.Distance(transform.localPosition, destination) < 0.01f)
+        tilesMoved = Random.Range(3, 3);
+        //destination = transform.localPosition + direction * tilesMoved;
+        for (int i = 0; i < tilesMoved; i++)
         {
-            transform.localPosition = destination;
-            isMoving = false;
+            destination[i] = transform.localPosition + (i+1) * direction;
         }
     }
 
-    
-    //private bool CheckForTurn()
-    //{
-    //    Physics.Raycast(transform.position, Vector3.down,out turnTileRayCast,1);
-    //    return turnTileRayCast.collider.gameObject == turnTile;
-    //}
+    private IEnumerable<Vector3> Move(Vector3 destination)
+    {
+        while (isMoving)
+        {
+            if (Vector3.Distance(transform.localPosition, destination) < 0.01f)
+            {
+                transform.localPosition = destination;
+                isMoving = false;
+            }
+            yield return Vector3.Lerp(transform.localPosition, destination, 0.0001f);
+        }
+    }
+
+    RaycastHit turnTileRayCast;
+    bool hit;
+    private bool CheckForTurn()
+    {
+        hit = Physics.Raycast(transform.localPosition, Vector3.down, out turnTileRayCast, 1);
+
+        return turnTileRayCast.collider.gameObject == turnTile;
+    }
 }
