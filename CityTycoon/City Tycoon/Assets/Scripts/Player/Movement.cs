@@ -12,6 +12,7 @@ public class Movement : MonoBehaviour
     private Vector3[] destination;
 
     private int tilesToMove;
+    private int tilesRolled;
 
     public bool isMoving;
 
@@ -24,7 +25,7 @@ public class Movement : MonoBehaviour
     {
         if (isMoving)
         {
-            int tilesRolled = tilesToMove;
+            tilesRolled = tilesToMove;
             while (tilesToMove > 0)
             {
                 isMoving = true;
@@ -55,7 +56,6 @@ public class Movement : MonoBehaviour
             if (transform.localPosition == destination && CheckForTurn())
             {
                 transform.rotation = transform.rotation * Quaternion.Euler(0, 90, 0);
-                tilesToMove++;
                 EvaluateTilesToMove();
             }
         }
@@ -65,6 +65,7 @@ public class Movement : MonoBehaviour
     {
         direction = 0.1f * transform.right;
         destination = new Vector3[tilesToMove];
+        tilesRolled = tilesToMove;
         for (int i = 0; i < tilesToMove; i++)
         {
             destination[i] = transform.localPosition + (i + 1) * direction;
