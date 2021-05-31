@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 1458016545273802071}
   m_Layer: 0
   m_Name: Street 13 Prefab
-  m_TagString: Untagged
+  m_TagString: TurnTile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

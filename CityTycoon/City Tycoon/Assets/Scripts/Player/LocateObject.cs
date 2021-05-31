@@ -8,7 +8,7 @@ public class LocateObject : MonoBehaviour
     {
         RaycastHit raycastHit;
         bool hit;
-        hit = Physics.BoxCast(transform.position, transform.localScale * 3, Vector3.forward, out raycastHit, transform.rotation, 30);
+        hit = Physics.BoxCast(transform.position, transform.localScale * 3, transform.forward, out raycastHit, transform.rotation, 30);
 
         if (hit == true)
         {

@@ -15,6 +15,7 @@ TagManager:
   - T2Building
   - T2Bulding
   - Bank
+  - TurnTile
   layers:
   - Default
   - TransparentFX

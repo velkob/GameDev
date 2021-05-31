@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
+    const int MAX_TILES = 6;
     [SerializeField]
     private Vector3 direction;
 
@@ -12,65 +11,75 @@ public class Movement : MonoBehaviour
 
     private Vector3[] destination;
 
-    private int tilesMoved;
+    private int tilesToMove;
 
     public bool isMoving;
 
     private void Start()
     {
         // direction = Vector3.forward;
-        destination = new Vector3[6];
+        //destination = new Vector3[MAX_TILES];
     }
     void Update()
     {
-
         if (isMoving)
         {
-            for (int i = 0; i < tilesMoved; i++)
+            int tilesRolled = tilesToMove;
+            while (tilesToMove > 0)
             {
                 isMoving = true;
-                transform.localPosition = Move(destination[i]).GetEnumerator().Current;
+                Move(destination[tilesRolled - tilesToMove]);
+                tilesToMove--;
             }
-        }
 
-        //transform.localPosition = destination;
-        //if (CheckForTurn())
-        //{
-        //    Debug.Log(turnTileRayCast.transform.eulerAngles);
-        //    Debug.Log(turnTileRayCast.transform.localEulerAngles);
-        //}
+        }
     }
 
     public void StartMoving()
     {
+        tilesToMove = Random.Range(MAX_TILES, MAX_TILES);
+        EvaluateTilesToMove();
         isMoving = true;
-        tilesMoved = Random.Range(3, 3);
-        //destination = transform.localPosition + direction * tilesMoved;
-        for (int i = 0; i < tilesMoved; i++)
-        {
-            destination[i] = transform.localPosition + (i+1) * direction;
-        }
     }
 
-    private IEnumerable<Vector3> Move(Vector3 destination)
+    private void Move(Vector3 destination)
     {
         while (isMoving)
         {
-            if (Vector3.Distance(transform.localPosition, destination) < 0.01f)
+            transform.localPosition = Vector3.Lerp(transform.localPosition, destination, Time.deltaTime);
+            if (Vector3.Distance(transform.localPosition, destination) < 0.001f)
             {
                 transform.localPosition = destination;
                 isMoving = false;
             }
-            yield return Vector3.Lerp(transform.localPosition, destination, 0.0001f);
+            if (transform.localPosition == destination && CheckForTurn())
+            {
+                transform.rotation = transform.rotation * Quaternion.Euler(0, 90, 0);
+                tilesToMove++;
+                EvaluateTilesToMove();
+            }
         }
     }
 
-    RaycastHit turnTileRayCast;
-    bool hit;
+    private void EvaluateTilesToMove()
+    {
+        direction = 0.1f * transform.right;
+        destination = new Vector3[tilesToMove];
+        for (int i = 0; i < tilesToMove; i++)
+        {
+            destination[i] = transform.localPosition + (i + 1) * direction;
+        }
+    }
+
     private bool CheckForTurn()
     {
-        hit = Physics.Raycast(transform.localPosition, Vector3.down, out turnTileRayCast, 1);
+        Physics.Raycast(transform.position, Vector3.down, out RaycastHit turnTileRayCast, 10);
+        return turnTileRayCast.collider != null && turnTileRayCast.collider.CompareTag("TurnTile");
+    }
 
-        return turnTileRayCast.collider.gameObject == turnTile;
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(transform.position, Vector3.down * 10);
     }
 }
