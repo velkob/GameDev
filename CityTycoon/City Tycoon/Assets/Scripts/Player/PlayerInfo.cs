@@ -5,18 +5,13 @@ using UnityEngine;
 public class PlayerInfo : MonoBehaviour
 {
     private int money;
+    private int id;
+    private static int GLOBAL_ID = 0;
 
     void Start()
     {
         money = 1000;
-        //BusinessEvents.current.OnBuyingProperty += setMoney;
-        //BusinessEvents.current.OnUpgradingProperty += setMoney;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        id = GLOBAL_ID++;
     }
 
     public int getMoney()
@@ -32,5 +27,10 @@ public class PlayerInfo : MonoBehaviour
     public void IncreaceMoney(int number)
     {
         money += number;
+    }
+    
+    public int GetID()
+    {
+        return id;
     }
 }

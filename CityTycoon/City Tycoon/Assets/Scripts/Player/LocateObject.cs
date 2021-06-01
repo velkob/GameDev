@@ -8,8 +8,8 @@ public class LocateObject : MonoBehaviour
     {
         RaycastHit raycastHit;
         bool hit;
-        hit = Physics.BoxCast(transform.position, transform.localScale * 3, transform.forward, out raycastHit, transform.rotation, 30);
-
+        hit = Physics.BoxCast(transform.position, transform.localScale / 3, transform.forward, out raycastHit, transform.rotation, 45);
+        
         if (hit == true)
         {
             return raycastHit.collider.gameObject;
@@ -19,4 +19,5 @@ public class LocateObject : MonoBehaviour
             return null;
         }
     }
+
 }

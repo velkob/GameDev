@@ -16,9 +16,9 @@ public class GridSceneStreetGen : MonoBehaviour
 
     private void Awake()
     {
-        GameObject parent = new GameObject("Oxford Str");
-        parent.transform.parent = transform;
-        parent.transform.localScale = Vector3.one;
+        //GameObject parent = new GameObject("Oxford Str");
+        //parent.transform.parent = transform;
+        //parent.transform.localScale = Vector3.one;
         //GenerateStreet(parent);
     }
 
@@ -26,8 +26,10 @@ public class GridSceneStreetGen : MonoBehaviour
     {
         for (int i = 0; i < 20; i++)
         {
-            GameObject go = Instantiate(streetTile, Vector3.right * i, Quaternion.Euler(0, 0, 0), parent.transform);
-            go.transform.localPosition = Vector3.right * i;
+            GameObject street = Instantiate(streetTile, Vector3.right * i, Quaternion.Euler(0, 0, 0), parent.transform);
+            street.transform.localPosition = Vector3.right * i;
         }
+        GameObject turn = Instantiate(turnTile, Vector3.right * 20, Quaternion.Euler(0, 270, 0), parent.transform);
+        turn.transform.localPosition = Vector3.right * 20;
     }
 }

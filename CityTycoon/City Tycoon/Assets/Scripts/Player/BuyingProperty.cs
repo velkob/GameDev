@@ -46,7 +46,7 @@ public class BuyingProperty : MonoBehaviour
 
     private void spendMoney()
     {
-        int amout = LocatePropery().GetComponent<PropertyInfo>().getPrice();
+        int amout = LocatePropery().GetComponent<PropertyInfo>().Price;
         if (money < amout)
         {
             //TODO: How to stop an event from happening

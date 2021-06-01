@@ -6,13 +6,12 @@ using TMPro;
 
 public class Money : MonoBehaviour
 {
-    private int money;
-
-    [SerializeField]
     private GameObject player;
 
-    private void Update()
+    private void LateUpdate()
     {
+        player = GameObject.Find("TurnManager").GetComponent<TurnManagment>().GetCurrentPlayer();
+
         gameObject.GetComponent<TextMeshProUGUI>().text = player.GetComponent<PlayerInfo>().getMoney().ToString() + "$";
     }
 }

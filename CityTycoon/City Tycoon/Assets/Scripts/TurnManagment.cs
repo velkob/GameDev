@@ -18,15 +18,25 @@ public class TurnManagment : MonoBehaviour
     private GameObject InsufficentFunds;
 
     [SerializeField]
-    private GameObject player;
+    private GameObject Camera;
+
+    [SerializeField]
+    private GameObject[] players;
+
+    private GameObject currentPlayer;
+
+    private int playersIndex;
 
     void Start()
     {
+        playersIndex = 0;
         StartTurn();
     }
 
     public void StartTurn()
     {
+        currentPlayer = players[playersIndex];
+        Camera.GetComponent<CameraFollowing>().player = currentPlayer.transform;
         RollDice();
     }
 
@@ -42,7 +52,7 @@ public class TurnManagment : MonoBehaviour
         rollButton.SetActive(false);
 
         // calls Movement.Move()
-        player.GetComponent<Movement>().StartMoving();
+        currentPlayer.GetComponent<Movement>().StartMoving();
         //waits for movement to finish and calls AfterMovementEvent
         StartCoroutine(WaitForPlayerToStop());
     }
@@ -50,17 +60,26 @@ public class TurnManagment : MonoBehaviour
     public void AfterMovementEvent()
     {
         //Locate whats left of the player
-        GameObject buildingOnTheLeft = player.GetComponent<LocateObject>().GetObject();
+        GameObject buildingOnTheLeft = currentPlayer.GetComponent<LocateObject>().GetObject();
+        PlayerInfo playerInfo = currentPlayer.GetComponent<PlayerInfo>();
+        PropertyInfo propertyInfo = buildingOnTheLeft.GetComponent<PropertyInfo>();
 
-        if (buildingOnTheLeft.CompareTag("ForSale")) //if the building is ForSale sign
+        if (propertyInfo.PlayerID != -1 && playerInfo.GetID() != propertyInfo.PlayerID)
         {
-            SaleOffer.SetActive(true);
-            StartCoroutine(WaitForPlayerToChooseForSale()); //Waits for player to choose an option
+            playerInfo.DecreaseMoney(propertyInfo.Rent);
         }
-        else if (buildingOnTheLeft.CompareTag("Bank"))
+        else if (propertyInfo.PlayerID == -1 || playerInfo.GetID() == propertyInfo.PlayerID)
         {
-            player.GetComponent<PlayerInfo>().IncreaceMoney(1000);
-            EndTurn();
+            if (buildingOnTheLeft.CompareTag("ForSale")) //if the building is ForSale sign
+            {
+                SaleOffer.SetActive(true);
+                StartCoroutine(WaitForPlayerToChooseForSale()); //Waits for player to choose an option
+            }
+            else if (buildingOnTheLeft.CompareTag("Bank"))
+            {
+                currentPlayer.GetComponent<PlayerInfo>().IncreaceMoney(1000);
+                EndTurn();
+            }
         }
     }
 
@@ -70,12 +89,14 @@ public class TurnManagment : MonoBehaviour
     {
         SaleOffer.SetActive(false);
         UpgradeOffer.SetActive(false);
-        StartTurn();
+        playersIndex = playersIndex + 1 == players.Length ? 0 : playersIndex + 1;
+        
+        Invoke(nameof(StartTurn), 0);
     }
 
     private IEnumerator WaitForPlayerToStop()
     {
-        while (player.GetComponent<Movement>().isMoving)
+        while (currentPlayer.GetComponent<Movement>().isMoving)
         {
             yield return null;
         }
@@ -90,9 +111,9 @@ public class TurnManagment : MonoBehaviour
             yield return null;
         }
 
-        GameObject buildingOnTheLeft = player.GetComponent<LocateObject>().GetObject();
+        GameObject buildingOnTheLeft = currentPlayer.GetComponent<LocateObject>().GetObject();
         if (buildingOnTheLeft.GetComponent<Upgrade>().CheckIfUpgradable() &&
-            buildingOnTheLeft.GetComponent<Upgrade>().GetPrice() < player.GetComponent<PlayerInfo>().getMoney() &&
+            buildingOnTheLeft.GetComponent<Upgrade>().GetPrice() < currentPlayer.GetComponent<PlayerInfo>().getMoney() &&
             !buildingOnTheLeft.CompareTag("ForSale")) // check if the building has neighbours that belong to the same player and can be upgraded
         {
             UpgradeOffer.SetActive(true); //Waits for player to Choose an option
@@ -108,27 +129,32 @@ public class TurnManagment : MonoBehaviour
 
     public void BuildHouse()
     {
-        GameObject buildingOnTheLeft = player.GetComponent<LocateObject>().GetObject();
-        int price = buildingOnTheLeft.GetComponent<PropertyInfo>().getPrice();
-        if (price > player.GetComponent<PlayerInfo>().getMoney())
+        GameObject buildingOnTheLeft = currentPlayer.GetComponent<LocateObject>().GetObject();
+        int price = buildingOnTheLeft.GetComponent<PropertyInfo>().Price;
+        if (price > currentPlayer.GetComponent<PlayerInfo>().getMoney())
         {
             InsufficentFunds.SetActive(true);
             return;
         }
         buildingOnTheLeft.GetComponent<BuildingHouse>().BuildAHouse();
-        player.GetComponent<PlayerInfo>().DecreaseMoney(price);
+        currentPlayer.GetComponent<PlayerInfo>().DecreaseMoney(price);
     }
 
     public void UpgradeHouse()
     {
-        GameObject buildingOnTheLeft = player.GetComponent<LocateObject>().GetObject();
+        GameObject buildingOnTheLeft = currentPlayer.GetComponent<LocateObject>().GetObject();
         int price = buildingOnTheLeft.GetComponent<Upgrade>().GetPrice();
-        if (price > player.GetComponent<PlayerInfo>().getMoney())
+        if (price > currentPlayer.GetComponent<PlayerInfo>().getMoney())
         {
             InsufficentFunds.SetActive(true);
             return;
         }
         buildingOnTheLeft.GetComponent<Upgrade>().UpgradeBuilding();
-        player.GetComponent<PlayerInfo>().DecreaseMoney(price);
+        currentPlayer.GetComponent<PlayerInfo>().DecreaseMoney(price);
+    }
+
+    public GameObject GetCurrentPlayer()
+    {
+        return currentPlayer;
     }
 }

@@ -8,18 +8,16 @@ public class Upgrade : MonoBehaviour
 
     [SerializeField]
     int[] prices;
-    private void Start()
-    {
-       // BusinessEvents.current.OnUpgradingProperty += UpgradeBuilding;
-    }
 
     public bool CheckIfUpgradable()
     {
         GameObject left, right;
         left = CheckLeftNeighbour();
         right = CheckRightNeighbour();
-
-        if (left && right != null)
+        PropertyInfo leftPropertyInfo = left != null ? left.GetComponent<PropertyInfo>() : null;
+        PropertyInfo rightPropertyInfo = right != null ? right.GetComponent<PropertyInfo>() : null;
+        if (left && right != null 
+            )
         {
             int number = GetHouseTier(left) + GetHouseTier(right);
             if (number + 1 <= Houses.Length)
@@ -48,9 +46,10 @@ public class Upgrade : MonoBehaviour
 
     public int GetPrice()
     {
-        GameObject go = GameObject.Find("Player").GetComponent<LocateObject>().GetObject();
+        GameObject player = GameObject.Find("TurnManager").GetComponent<TurnManagment>().GetCurrentPlayer();
+        GameObject go = player.GetComponent<LocateObject>().GetObject();
 
-        if (go.GetComponent<PropertyInfo>().getId() == gameObject.GetComponent<PropertyInfo>().getId())
+        if (go.GetComponent<PropertyInfo>().Id == gameObject.GetComponent<PropertyInfo>().Id)
         {
             int number = 0;
             GameObject left, right;
@@ -76,9 +75,10 @@ public class Upgrade : MonoBehaviour
 
     public void UpgradeBuilding()
     {
-        GameObject go = GameObject.Find("Player").GetComponent<LocateObject>().GetObject();
+        GameObject player = GameObject.Find("TurnManager").GetComponent<TurnManagment>().GetCurrentPlayer();
+        GameObject go = player.GetComponent<LocateObject>().GetObject();
 
-        if (go.GetComponent<PropertyInfo>().getId() == gameObject.GetComponent<PropertyInfo>().getId())
+        if (go.GetComponent<PropertyInfo>().Id == gameObject.GetComponent<PropertyInfo>().Id)
         {
             GameObject left, right;
             left = CheckLeftNeighbour();
@@ -90,7 +90,7 @@ public class Upgrade : MonoBehaviour
                 left.SetActive(false);
                 right.SetActive(false);
                 gameObject.SetActive(false);
-                Instantiate(Houses[number + 1],
+                Instantiate(Houses[number],
                     GetNewHousePos(left, right),
                     Quaternion.Euler(0, -90, 0),
                     transform.parent);
@@ -100,11 +100,10 @@ public class Upgrade : MonoBehaviour
                 number = GetHouseTier(right);
                 right.SetActive(false);
                 gameObject.SetActive(false);
-                Instantiate(Houses[number + 1],
+                Instantiate(Houses[number],
                     GetNewHousePos(right),
                     Quaternion.Euler(0, -90, 0),
                     transform.parent);
-
             }
             else if (left != null)
             {
@@ -115,7 +114,6 @@ public class Upgrade : MonoBehaviour
                     GetNewHousePos(left),
                     Quaternion.Euler(0, -90, 0),
                     transform.parent);
-
             }
         }
     }

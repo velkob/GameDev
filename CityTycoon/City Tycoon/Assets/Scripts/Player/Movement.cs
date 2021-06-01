@@ -16,11 +16,6 @@ public class Movement : MonoBehaviour
 
     public bool isMoving;
 
-    private void Start()
-    {
-        // direction = Vector3.forward;
-        //destination = new Vector3[MAX_TILES];
-    }
     void Update()
     {
         if (isMoving)
@@ -63,9 +58,10 @@ public class Movement : MonoBehaviour
 
     private void EvaluateTilesToMove()
     {
-        direction = 0.1f * transform.right;
+        direction = transform.right;
         destination = new Vector3[tilesToMove];
         tilesRolled = tilesToMove;
+
         for (int i = 0; i < tilesToMove; i++)
         {
             destination[i] = transform.localPosition + (i + 1) * direction;
@@ -78,9 +74,4 @@ public class Movement : MonoBehaviour
         return turnTileRayCast.collider != null && turnTileRayCast.collider.CompareTag("TurnTile");
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawRay(transform.position, Vector3.down * 10);
-    }
 }
