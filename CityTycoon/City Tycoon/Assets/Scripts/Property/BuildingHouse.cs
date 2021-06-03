@@ -20,8 +20,9 @@ public class BuildingHouse : MonoBehaviour
         {
             GameObject house = Instantiate(house1,
                 new Vector3(transform.position.x, 0, transform.position.z),
-                Quaternion.Euler(0, 0, 0),
+                Quaternion.Euler(0, -90, 0),
                 transform.parent);
+            house.transform.localRotation = house.transform.rotation;
             house.GetComponent<PropertyInfo>().PlayerID = player.GetComponent<PlayerInfo>().GetID();
             gameObject.SetActive(false);
         };

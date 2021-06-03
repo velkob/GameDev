@@ -16,7 +16,7 @@ public class Upgrade : MonoBehaviour
         right = CheckRightNeighbour();
         PropertyInfo leftPropertyInfo = left != null ? left.GetComponent<PropertyInfo>() : null;
         PropertyInfo rightPropertyInfo = right != null ? right.GetComponent<PropertyInfo>() : null;
-        if (left && right != null 
+        if (left && right != null
             )
         {
             int number = GetHouseTier(left) + GetHouseTier(right);
@@ -90,30 +90,33 @@ public class Upgrade : MonoBehaviour
                 left.SetActive(false);
                 right.SetActive(false);
                 gameObject.SetActive(false);
-                Instantiate(Houses[number],
+                GameObject house = Instantiate(Houses[number],
                     GetNewHousePos(left, right),
                     Quaternion.Euler(0, -90, 0),
                     transform.parent);
+                house.transform.localRotation = house.transform.rotation;
             }
             else if (right != null)
             {
                 number = GetHouseTier(right);
                 right.SetActive(false);
                 gameObject.SetActive(false);
-                Instantiate(Houses[number],
+                GameObject house = Instantiate(Houses[number],
                     GetNewHousePos(right),
                     Quaternion.Euler(0, -90, 0),
                     transform.parent);
+                house.transform.localRotation = house.transform.rotation;
             }
             else if (left != null)
             {
                 number = GetHouseTier(left);
                 left.SetActive(false);
                 gameObject.SetActive(false);
-                Instantiate(Houses[number],
+                GameObject house = Instantiate(Houses[number],
                     GetNewHousePos(left),
                     Quaternion.Euler(0, -90, 0),
                     transform.parent);
+                house.transform.localRotation = house.transform.rotation;
             }
         }
     }
@@ -147,8 +150,7 @@ public class Upgrade : MonoBehaviour
     RaycastHit raycastHit;
     GameObject CheckLeftNeighbour()
     {
-        //bool hit;
-        hit = Physics.BoxCast(transform.position + Vector3.up, transform.localScale * 3, Vector3.left, out raycastHit, transform.rotation, 30);
+        hit = Physics.BoxCast(transform.position + transform.up, transform.localScale * 3, transform.forward, out raycastHit, transform.rotation, 30);
         string raycastHitTag = hit != false ? Regex.Match(raycastHit.collider.tag, "T\\dBuilding").Value : "DefinetlyNotATagName";
         raycastHitTag = string.IsNullOrEmpty(raycastHitTag) ? "DefinetlyNotATagName" : raycastHitTag;
 
@@ -164,7 +166,7 @@ public class Upgrade : MonoBehaviour
     GameObject CheckRightNeighbour()
     {
         bool hit;
-        hit = Physics.BoxCast(transform.position, transform.localScale * 3, Vector3.right, out RaycastHit raycastHit, transform.rotation, 30);
+        hit = Physics.BoxCast(transform.position + transform.up, transform.localScale * 3, -transform.forward, out RaycastHit raycastHit, transform.rotation, 30);
         string raycastHitTag = hit != false ? Regex.Match(raycastHit.collider.tag, "T\\dBuilding").Value : "DefinetlyNotATagName";
         raycastHitTag = string.IsNullOrEmpty(raycastHitTag) ? "DefinetlyNotATagName" : raycastHitTag;
 
@@ -177,29 +179,4 @@ public class Upgrade : MonoBehaviour
             return null;
         }
     }
-
-    //void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.red;
-    //    GameObject go = GameObject.Find("Player").GetComponent<LocateObject>().GetObject();
-
-    //    //Check if there has been a hit yet
-    //    if (hit)
-    //    {
-    //        //Draw a Ray forward from GameObject toward the hit
-    //        Gizmos.DrawRay(transform.position + Vector3.up, Vector3.left * raycastHit.distance);
-    //        //Draw a cube that extends to where the hit exists
-    //        Gizmos.DrawWireCube(transform.position + Vector3.up + Vector3.left * raycastHit.distance, transform.localScale * 3);
-    //    }
-    //    //If there hasn't been a hit yet, draw the ray at the maximum distance
-    //    else if (go.GetComponent<PropertyInfo>().getId() == gameObject.GetComponent<PropertyInfo>().getId())
-    //    {
-    //        //Draw a Ray forward from GameObject toward the maximum distance
-    //        Gizmos.DrawRay(transform.position + Vector3.up, Vector3.left * 30);
-    //        //Draw a cube at the maximum distance
-    //        Gizmos.DrawWireCube(transform.position + Vector3.up + Vector3.left * 30, transform.localScale * 3);
-
-    //    }
-
-    //}
 }
