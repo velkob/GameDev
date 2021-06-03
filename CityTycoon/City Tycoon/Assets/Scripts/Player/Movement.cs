@@ -18,42 +18,46 @@ public class Movement : MonoBehaviour
 
     void Update()
     {
+        //if (isMoving)
+        //{
+        //    Debug.Log(1);
+        //    tilesRolled = tilesToMove;
+        //    while (tilesToMove > 0)
+        //    {
+        //        isMoving = true;
+        //        Move(destination[tilesRolled - tilesToMove]);
+        //        tilesToMove--;
+        //    }
+
+        //}
+
         if (isMoving)
         {
-            tilesRolled = tilesToMove;
-            while (tilesToMove > 0)
+            transform.localPosition = Vector3.Lerp(transform.localPosition, destination[tilesRolled - tilesToMove], 30f * Time.deltaTime);
+            if (Vector3.Distance(transform.localPosition, destination[tilesRolled - tilesToMove]) < 0.01f)
             {
-                isMoving = true;
-                Move(destination[tilesRolled - tilesToMove]);
+                transform.localPosition = destination[tilesRolled - tilesToMove];
                 tilesToMove--;
+
+                if (tilesToMove == 0)
+                {
+                    isMoving = false;
+                    return;
+                }
             }
-
-        }
-    }
-
-    public void StartMoving()
-    {
-        tilesToMove = Random.Range(MAX_TILES, MAX_TILES);
-        EvaluateTilesToMove();
-        isMoving = true;
-    }
-
-    private void Move(Vector3 destination)
-    {
-        while (isMoving)
-        {
-            transform.localPosition = Vector3.Lerp(transform.localPosition, destination, Time.deltaTime);
-            if (Vector3.Distance(transform.localPosition, destination) < 0.001f)
-            {
-                transform.localPosition = destination;
-                isMoving = false;
-            }
-            if (transform.localPosition == destination && CheckForTurn())
+            if (transform.localPosition == destination[tilesRolled - tilesToMove] && CheckForTurn())
             {
                 transform.rotation = transform.rotation * Quaternion.Euler(0, 90, 0);
                 EvaluateTilesToMove();
             }
         }
+    }
+
+    public void StartMoving()
+    {
+        tilesToMove = Random.Range(1, 1);
+        EvaluateTilesToMove();
+        isMoving = true;
     }
 
     private void EvaluateTilesToMove()
