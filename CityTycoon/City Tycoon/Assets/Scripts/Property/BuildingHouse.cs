@@ -24,6 +24,7 @@ public class BuildingHouse : MonoBehaviour
                 transform.parent);
             house.transform.localRotation = house.transform.rotation;
             house.GetComponent<PropertyInfo>().PlayerID = player.GetComponent<PlayerInfo>().GetID();
+            house.GetComponent<PropertyInfo>().Rent = 10;
             gameObject.SetActive(false);
         };
     }

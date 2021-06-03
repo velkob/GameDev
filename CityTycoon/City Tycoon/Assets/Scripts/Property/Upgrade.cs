@@ -9,6 +9,9 @@ public class Upgrade : MonoBehaviour
     [SerializeField]
     int[] prices;
 
+    [SerializeField]
+    int[] rents;
+
     public bool CheckIfUpgradable()
     {
         GameObject left, right;
@@ -95,6 +98,7 @@ public class Upgrade : MonoBehaviour
                     Quaternion.Euler(0, -90, 0),
                     transform.parent);
                 house.transform.localRotation = house.transform.rotation;
+                house.GetComponent<PropertyInfo>().Rent = rents[number];
             }
             else if (right != null)
             {
@@ -106,6 +110,7 @@ public class Upgrade : MonoBehaviour
                     Quaternion.Euler(0, -90, 0),
                     transform.parent);
                 house.transform.localRotation = house.transform.rotation;
+                house.GetComponent<PropertyInfo>().Rent=rents[number];
             }
             else if (left != null)
             {
@@ -117,6 +122,7 @@ public class Upgrade : MonoBehaviour
                     Quaternion.Euler(0, -90, 0),
                     transform.parent);
                 house.transform.localRotation = house.transform.rotation;
+                house.GetComponent<PropertyInfo>().Rent=rents[number];
             }
         }
     }

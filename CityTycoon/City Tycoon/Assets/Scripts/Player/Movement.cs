@@ -2,7 +2,9 @@
 
 public class Movement : MonoBehaviour
 {
-    const int MAX_TILES = 6;
+    [SerializeField]
+    int MAX_TILES = 6;
+
     [SerializeField]
     private Vector3 direction;
 
@@ -45,7 +47,7 @@ public class Movement : MonoBehaviour
 
     public void StartMoving()
     {
-        tilesToMove = Random.Range(1, MAX_TILES);
+        tilesToMove = Random.Range(MAX_TILES, MAX_TILES);
         EvaluateTilesToMove();
         isMoving = true;
     }

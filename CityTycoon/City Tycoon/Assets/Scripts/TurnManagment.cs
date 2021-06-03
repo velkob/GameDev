@@ -67,6 +67,8 @@ public class TurnManagment : MonoBehaviour
         if (propertyInfo.PlayerID != -1 && playerInfo.GetID() != propertyInfo.PlayerID)
         {
             playerInfo.DecreaseMoney(propertyInfo.Rent);
+            IncreasePropertyOwnerMoney(propertyInfo.PlayerID, propertyInfo.Rent);
+            EndTurn();
         }
         else if (propertyInfo.PlayerID == -1 || playerInfo.GetID() == propertyInfo.PlayerID)
         {
@@ -83,14 +85,25 @@ public class TurnManagment : MonoBehaviour
         }
     }
 
-
+    private void IncreasePropertyOwnerMoney(int ownerID, int rent)
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in players)
+        {
+            PlayerInfo playerInfo = player.GetComponent<PlayerInfo>();
+            if (playerInfo.GetID() == ownerID)
+            {
+                playerInfo.IncreaceMoney(rent);
+            }
+        }
+    }
 
     public void EndTurn()
     {
         SaleOffer.SetActive(false);
         UpgradeOffer.SetActive(false);
         playersIndex = playersIndex + 1 == players.Length ? 0 : playersIndex + 1;
-        
+
         Invoke(nameof(StartTurn), 0);
     }
 
