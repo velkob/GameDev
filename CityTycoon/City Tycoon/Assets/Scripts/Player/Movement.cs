@@ -18,44 +18,34 @@ public class Movement : MonoBehaviour
 
     void Update()
     {
-        //if (isMoving)
-        //{
-        //    Debug.Log(1);
-        //    tilesRolled = tilesToMove;
-        //    while (tilesToMove > 0)
-        //    {
-        //        isMoving = true;
-        //        Move(destination[tilesRolled - tilesToMove]);
-        //        tilesToMove--;
-        //    }
-
-        //}
-
         if (isMoving)
         {
             transform.localPosition = Vector3.Lerp(transform.localPosition, destination[tilesRolled - tilesToMove], 30f * Time.deltaTime);
+            
             if (Vector3.Distance(transform.localPosition, destination[tilesRolled - tilesToMove]) < 0.01f)
             {
                 transform.localPosition = destination[tilesRolled - tilesToMove];
+
+                if (CheckForTurn())
+                {
+                    transform.rotation = transform.rotation * Quaternion.Euler(0, 90, 0);
+                    EvaluateTilesToMove();
+                    tilesToMove++;
+                }
+
                 tilesToMove--;
 
                 if (tilesToMove == 0)
                 {
                     isMoving = false;
-                    return;
                 }
-            }
-            if (transform.localPosition == destination[tilesRolled - tilesToMove] && CheckForTurn())
-            {
-                transform.rotation = transform.rotation * Quaternion.Euler(0, 90, 0);
-                EvaluateTilesToMove();
             }
         }
     }
 
     public void StartMoving()
     {
-        tilesToMove = Random.Range(1, 1);
+        tilesToMove = Random.Range(1, MAX_TILES);
         EvaluateTilesToMove();
         isMoving = true;
     }
@@ -77,5 +67,4 @@ public class Movement : MonoBehaviour
         Physics.Raycast(transform.position, Vector3.down, out RaycastHit turnTileRayCast, 10);
         return turnTileRayCast.collider != null && turnTileRayCast.collider.CompareTag("TurnTile");
     }
-
 }
