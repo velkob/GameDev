@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 public class Upgrade : MonoBehaviour
@@ -22,24 +23,24 @@ public class Upgrade : MonoBehaviour
         if (left && right != null
             )
         {
-            int number = GetHouseTier(left) + GetHouseTier(right);
-            if (number + 1 <= Houses.Length)
+            int houseTier = GetHouseTier(left) + GetHouseTier(right);
+            if (houseTier + 1 <= Houses.Length)
             {
                 return true;
             }
         }
         else if (right != null)
         {
-            int number = GetHouseTier(right);
-            if (number + 1 <= Houses.Length)
+            int houseTier = GetHouseTier(right);
+            if (houseTier + 1 <= Houses.Length)
             {
                 return true;
             }
         }
         else if (left != null)
         {
-            int number = GetHouseTier(left);
-            if (number + 1 <= Houses.Length)
+            int houseTier = GetHouseTier(left);
+            if (houseTier + 1 <= Houses.Length)
             {
                 return true;
             }
@@ -54,24 +55,24 @@ public class Upgrade : MonoBehaviour
 
         if (go.GetComponent<PropertyInfo>().Id == gameObject.GetComponent<PropertyInfo>().Id)
         {
-            int number = 0;
+            int houseTier = 0;
             GameObject left, right;
             left = CheckLeftNeighbour();
             right = CheckRightNeighbour();
             if (left && right != null)
             {
-                number = GetHouseTier(left) + GetHouseTier(right);
+                houseTier = GetHouseTier(left) + GetHouseTier(right);
             }
             else if (right != null)
             {
-                number = GetHouseTier(right);
+                houseTier = GetHouseTier(right);
 
             }
             else if (left != null)
             {
-                number = GetHouseTier(left);
+                houseTier = GetHouseTier(left);
             }
-            return prices[number];
+            return prices[houseTier];
         }
         return -1;
     }
@@ -86,45 +87,54 @@ public class Upgrade : MonoBehaviour
             GameObject left, right;
             left = CheckLeftNeighbour();
             right = CheckRightNeighbour();
-            int number;
+            int houseTier;
             if (left && right != null)
             {
-                number = GetHouseTier(left) + GetHouseTier(right);
+                houseTier = GetHouseTier(left) + GetHouseTier(right);
                 left.SetActive(false);
                 right.SetActive(false);
                 gameObject.SetActive(false);
-                GameObject house = Instantiate(Houses[number],
-                    GetNewHousePos(left, right),
-                    Quaternion.Euler(0, -90, 0),
-                    transform.parent);
-                house.transform.localRotation = house.transform.rotation;
-                house.GetComponent<PropertyInfo>().Rent = rents[number];
+                CreateHouse(player, left, right, houseTier);
             }
             else if (right != null)
             {
-                number = GetHouseTier(right);
+                houseTier = GetHouseTier(right);
                 right.SetActive(false);
                 gameObject.SetActive(false);
-                GameObject house = Instantiate(Houses[number],
-                    GetNewHousePos(right),
-                    Quaternion.Euler(0, -90, 0),
-                    transform.parent);
-                house.transform.localRotation = house.transform.rotation;
-                house.GetComponent<PropertyInfo>().Rent=rents[number];
+                CreateHouse(player, right, houseTier);
             }
             else if (left != null)
             {
-                number = GetHouseTier(left);
+                houseTier = GetHouseTier(left);
                 left.SetActive(false);
                 gameObject.SetActive(false);
-                GameObject house = Instantiate(Houses[number],
-                    GetNewHousePos(left),
-                    Quaternion.Euler(0, -90, 0),
-                    transform.parent);
-                house.transform.localRotation = house.transform.rotation;
-                house.GetComponent<PropertyInfo>().Rent=rents[number];
+                CreateHouse(player, left, houseTier);
             }
         }
+    }
+
+    private void CreateHouse(GameObject player, GameObject neighbour, int houseTier)
+    {
+        GameObject house = Instantiate(Houses[houseTier],
+                       GetNewHousePos(neighbour, houseTier),
+                       Quaternion.Euler(0, -90, 0),
+                       transform.parent);
+        house.transform.localRotation = house.transform.rotation;
+        house.transform.localPosition += Vector3.forward * houseTier * 0.02f;
+        house.GetComponent<PropertyInfo>().PlayerID = player.GetComponent<PlayerInfo>().GetID();
+        house.GetComponent<PropertyInfo>().Rent = rents[houseTier];
+    }
+
+    private void CreateHouse(GameObject player, GameObject left, GameObject right, int houseTier)
+    {
+        GameObject house = Instantiate(Houses[houseTier],
+                       GetNewHousePos(left, right, houseTier),
+                       Quaternion.Euler(0, -90, 0),
+                       transform.parent);
+        house.transform.localRotation = house.transform.rotation;
+        //house.transform.localPosition += Vector3.back * houseTier * 0.1f;
+        house.GetComponent<PropertyInfo>().PlayerID = player.GetComponent<PlayerInfo>().GetID();
+        house.GetComponent<PropertyInfo>().Rent = rents[houseTier];
     }
 
     private int GetHouseTier(GameObject house)
@@ -132,16 +142,18 @@ public class Upgrade : MonoBehaviour
         return int.Parse(house.tag[1].ToString());
     }
 
-    private Vector3 GetNewHousePos(GameObject house)
+    private Vector3 GetNewHousePos(GameObject house, int houseTier)
     {
-        return Vector3.Lerp(new Vector3(transform.position.x, 0, transform.position.z),
+        return Vector3.Lerp(
+            new Vector3(transform.position.x, 0, transform.position.z),
             new Vector3(house.transform.position.x, 0, house.transform.position.z),
             0.5f);
     }
 
-    private Vector3 GetNewHousePos(GameObject house1, GameObject house2)
+    private Vector3 GetNewHousePos(GameObject house1, GameObject house2, int houseTier)
     {
-        Vector3 firstLerp = Vector3.Lerp(new Vector3(transform.position.x, 0, transform.position.z),
+        Vector3 firstLerp = Vector3.Lerp(
+            new Vector3(transform.position.x, 0, transform.position.z),
             new Vector3(house1.transform.position.x, 0, house1.transform.position.z),
             0.5f);
 
