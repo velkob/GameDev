@@ -15,14 +15,20 @@ public class Upgrade : MonoBehaviour
 
     public bool CheckIfUpgradable()
     {
-        GameObject left, right;
-        left = CheckLeftNeighbour();
-        right = CheckRightNeighbour();
+        GameObject left = CheckLeftNeighbour();
+        GameObject right = CheckRightNeighbour();
+        PlayerInfo playerInfo = GameObject.Find("TurnManager")
+                                            .GetComponent<TurnManagment>()
+                                            .GetCurrentPlayer()
+                                            .GetComponent<PlayerInfo>();
         PropertyInfo leftPropertyInfo = left != null ? left.GetComponent<PropertyInfo>() : null;
         PropertyInfo rightPropertyInfo = right != null ? right.GetComponent<PropertyInfo>() : null;
-        if (left && right != null
-            )
+        if (left && right != null)
         {
+            if (playerInfo.GetID() != leftPropertyInfo.PlayerID && playerInfo.GetID() != rightPropertyInfo.PlayerID)
+            {
+                return false;
+            }
             int houseTier = GetHouseTier(left) + GetHouseTier(right);
             if (houseTier + 1 <= Houses.Length)
             {
@@ -31,6 +37,10 @@ public class Upgrade : MonoBehaviour
         }
         else if (right != null)
         {
+            if (playerInfo.GetID() != rightPropertyInfo.PlayerID)
+            {
+                return false;
+            }
             int houseTier = GetHouseTier(right);
             if (houseTier + 1 <= Houses.Length)
             {
@@ -39,6 +49,10 @@ public class Upgrade : MonoBehaviour
         }
         else if (left != null)
         {
+            if (playerInfo.GetID() != leftPropertyInfo.PlayerID)
+            {
+                return false;
+            }
             int houseTier = GetHouseTier(left);
             if (houseTier + 1 <= Houses.Length)
             {
@@ -87,53 +101,66 @@ public class Upgrade : MonoBehaviour
             GameObject left, right;
             left = CheckLeftNeighbour();
             right = CheckRightNeighbour();
-            int houseTier;
+            int playerID = player.GetComponent<PlayerInfo>().GetID();
+            PropertyInfo leftPropertyInfo = left != null ? left.GetComponent<PropertyInfo>() : null;
+            PropertyInfo rightPropertyInfo = right != null ? right.GetComponent<PropertyInfo>() : null;
+
             if (left && right != null)
             {
-                houseTier = GetHouseTier(left) + GetHouseTier(right);
-                left.SetActive(false);
-                right.SetActive(false);
-                gameObject.SetActive(false);
-                CreateHouse(player, left, right, houseTier);
+                if (playerID == leftPropertyInfo.PlayerID && playerID == rightPropertyInfo.PlayerID)
+                {
+                    CreateHouse(playerID, left, right);
+                }
+                else if (playerID != leftPropertyInfo.PlayerID && playerID == rightPropertyInfo.PlayerID)
+                {
+                    CreateHouse(playerID, right);
+                }
+                else if (playerID == leftPropertyInfo.PlayerID && playerID != rightPropertyInfo.PlayerID)
+                {
+                    CreateHouse(playerID, left);
+                }
             }
             else if (right != null)
             {
-                houseTier = GetHouseTier(right);
-                right.SetActive(false);
-                gameObject.SetActive(false);
-                CreateHouse(player, right, houseTier);
+                CreateHouse(playerID, right);
             }
             else if (left != null)
             {
-                houseTier = GetHouseTier(left);
-                left.SetActive(false);
-                gameObject.SetActive(false);
-                CreateHouse(player, left, houseTier);
+                CreateHouse(playerID, left);
             }
         }
     }
 
-    private void CreateHouse(GameObject player, GameObject neighbour, int houseTier)
+    private void CreateHouse(int playerID, GameObject neighbour)
     {
+        int houseTier = GetHouseTier(neighbour);
+        neighbour.SetActive(false);
+        gameObject.SetActive(false);
+
         GameObject house = Instantiate(Houses[houseTier],
                        GetNewHousePos(neighbour, houseTier),
                        Quaternion.Euler(0, -90, 0),
                        transform.parent);
         house.transform.localRotation = house.transform.rotation;
         house.transform.localPosition += Vector3.forward * houseTier * 0.02f;
-        house.GetComponent<PropertyInfo>().PlayerID = player.GetComponent<PlayerInfo>().GetID();
+        house.GetComponent<PropertyInfo>().PlayerID = playerID;
         house.GetComponent<PropertyInfo>().Rent = rents[houseTier];
     }
 
-    private void CreateHouse(GameObject player, GameObject left, GameObject right, int houseTier)
+    private void CreateHouse(int playerID, GameObject left, GameObject right)
     {
+        int houseTier = GetHouseTier(left) + GetHouseTier(right);
+        left.SetActive(false);
+        right.SetActive(false);
+        gameObject.SetActive(false);
+
         GameObject house = Instantiate(Houses[houseTier],
                        GetNewHousePos(left, right, houseTier),
                        Quaternion.Euler(0, -90, 0),
                        transform.parent);
         house.transform.localRotation = house.transform.rotation;
         //house.transform.localPosition += Vector3.back * houseTier * 0.1f;
-        house.GetComponent<PropertyInfo>().PlayerID = player.GetComponent<PlayerInfo>().GetID();
+        house.GetComponent<PropertyInfo>().PlayerID = playerID;
         house.GetComponent<PropertyInfo>().Rent = rents[houseTier];
     }
 

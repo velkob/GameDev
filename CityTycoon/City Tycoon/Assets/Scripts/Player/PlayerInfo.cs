@@ -10,7 +10,7 @@ public class PlayerInfo : MonoBehaviour
 
     void Start()
     {
-        money = 1000;
+        money = 5000;
         id = GLOBAL_ID++;
     }
 
