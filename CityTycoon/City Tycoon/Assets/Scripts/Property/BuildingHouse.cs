@@ -25,7 +25,22 @@ public class BuildingHouse : MonoBehaviour
             house.transform.localRotation = house.transform.rotation;
             house.GetComponent<PropertyInfo>().PlayerID = player.GetComponent<PlayerInfo>().GetID();
             house.GetComponent<PropertyInfo>().Rent = 10;
+            PaintTheRooftop(house);
             gameObject.SetActive(false);
         };
+    }
+
+    private void PaintTheRooftop(GameObject house)
+    {
+        Material[] materials = house.transform.GetChild(0).GetComponent<Renderer>().materials;
+        GameObject player = GameObject.Find("TurnManager").GetComponent<TurnManagment>().GetCurrentPlayer();
+        foreach (Material mat in materials)
+        {
+            if (mat.name == "Roof (Instance)")
+            {
+                Debug.Log(player.GetComponent<PlayerInfo>().GetPlayerColor());
+                mat.color = player.GetComponent<PlayerInfo>().GetPlayerColor();
+            }
+        }
     }
 }
