@@ -145,6 +145,21 @@ public class Upgrade : MonoBehaviour
         house.transform.localPosition += Vector3.forward * houseTier * 0.02f;
         house.GetComponent<PropertyInfo>().PlayerID = playerID;
         house.GetComponent<PropertyInfo>().Rent = rents[houseTier];
+        PaintTheRooftop(house);
+    }
+
+    private void PaintTheRooftop(GameObject house)
+    {
+        Material[] materials = house.transform.GetChild(0).GetComponent<Renderer>().materials;
+        GameObject player = GameObject.Find("TurnManager").GetComponent<TurnManagment>().GetCurrentPlayer();
+        foreach (Material mat in materials)
+        {
+            if (mat.name == "Roof (Instance)")
+            {
+                Debug.Log(player.GetComponent<PlayerInfo>().GetPlayerColor());
+                mat.color = player.GetComponent<PlayerInfo>().GetPlayerColor();
+            }
+        }
     }
 
     private void CreateHouse(int playerID, GameObject left, GameObject right)
