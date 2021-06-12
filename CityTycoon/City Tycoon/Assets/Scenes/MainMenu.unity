@@ -1621,8 +1621,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51a5345a6b6466349a442f01dbd8ce81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameScene: {fileID: 102900000, guid: b473e39ba9c2009499a7f5a1ac169f20, type: 3}
-  mainMenuScene: {fileID: 102900000, guid: 422a177ca0ba9db46b31f367f55fb3b9, type: 3}
+  gameScene: GridScene
+  mainMenuScene: MainMenu
+  winningScene: WinningScreen
 --- !u!4 &844619235
 Transform:
   m_ObjectHideFlags: 0

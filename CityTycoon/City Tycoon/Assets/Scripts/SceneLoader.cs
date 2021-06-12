@@ -1,14 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
-    public SceneAsset gameScene;
-    public SceneAsset mainMenuScene;
-    public SceneAsset winningScene;
+    public string gameScene;
+    public string mainMenuScene;
+    public string winningScene;
 
     private void Start()
     {
@@ -16,17 +15,17 @@ public class SceneLoader : MonoBehaviour
     }
     public void LoadGame()
     {
-        SceneManager.LoadScene(gameScene.name);
+        SceneManager.LoadScene(gameScene);
     }
 
     public void LoadMainMenu()
     {
-        SceneManager.LoadScene(mainMenuScene.name);
+        SceneManager.LoadScene(mainMenuScene);
     }
 
     public void LoadWinningScreen()
     {
-        SceneManager.LoadScene(winningScene.name);
+        SceneManager.LoadScene(winningScene);
     }
 
     public void Exit()

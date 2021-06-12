@@ -11,7 +11,7 @@ public class PlayerInfo : MonoBehaviour
     void Start()
     {
         GameOver.current.PlayerLoosesAction += DestroyObject;
-        money = 1000;
+        money = 2500;
         id = GLOBAL_ID++;
         FindAndSetColor();
 

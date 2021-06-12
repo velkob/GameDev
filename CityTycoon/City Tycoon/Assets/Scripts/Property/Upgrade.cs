@@ -188,7 +188,7 @@ public class Upgrade : MonoBehaviour
     private Vector3 GetNewHousePos(GameObject house, int houseTier)
     {
         return Vector3.Lerp(
-            new Vector3(transform.position.x + transform.position.x * 0.2f, 0, transform.position.z),
+            new Vector3(transform.position.x, 0, transform.position.z),
             new Vector3(house.transform.position.x, 0, house.transform.position.z),
             0.5f);
     }
