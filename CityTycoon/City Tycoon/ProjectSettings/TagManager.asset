@@ -16,6 +16,8 @@ TagManager:
   - T2Bulding
   - Bank
   - TurnTile
+  - SuperMarket
+  - PowerUpSign
   layers:
   - Default
   - TransparentFX

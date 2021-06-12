@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TurnManagment : MonoBehaviour
@@ -22,7 +23,7 @@ public class TurnManagment : MonoBehaviour
     private GameObject Camera;
 
     [SerializeField]
-    private GameObject[] players;
+    private List<GameObject> players;
 
     [SerializeField]
     private GameObject[] powerups;
@@ -33,14 +34,32 @@ public class TurnManagment : MonoBehaviour
 
     void Start()
     {
+        GameOver.current.PlayerLoosesAction += RemovePlayerFromArray;
         playersIndex = 0;
         StartTurn();
     }
 
+    private void RemovePlayerFromArray(int id)
+    {
+        foreach (GameObject player in players)
+        {
+            if (player.GetComponent<PlayerInfo>().GetID() == id)
+            {
+                players.Remove(player);
+                break;
+            }
+        }
+        EndTurn();
+    }
+
     private void StartTurn()
     {
+        if (players.Count == 1)
+        {
+            GameOver.current.EndGame();
+        }
         currentPlayer = players[playersIndex];
-        Camera.GetComponent<CameraFollowing>().player = currentPlayer.transform;
+        Camera.GetComponent<CameraFollowing>().SetCurrentPlayer(currentPlayer.transform);
         RollDice();
     }
 
@@ -69,7 +88,7 @@ public class TurnManagment : MonoBehaviour
 
         if (propertyInfo.PlayerID == -1)
         {
-            if (buildingOnTheLeft.CompareTag("ForSale")) //if the building is ForSale sign
+            if (buildingOnTheLeft.CompareTag("ForSale") && playerInfo.getMoney() > propertyInfo.Price) //if the building is ForSale sign
             {
                 UISaleOffer.SetActive(true);
                 StartCoroutine(WaitForPlayerToChooseForSale()); //Waits for player to choose an option
@@ -83,6 +102,10 @@ public class TurnManagment : MonoBehaviour
             {
                 currentPlayer.GetComponent<PowerUps>().OwnedPowerUp = powerups[Random.Range(0, powerups.Length)];
                 PowerUpPlacement();
+            }
+            else
+            {
+                EndTurn();
             }
         }
         else if (propertyInfo.PlayerID != -1 && playerInfo.GetID() != propertyInfo.PlayerID)
@@ -121,14 +144,13 @@ public class TurnManagment : MonoBehaviour
         UISaleOffer.SetActive(false);
         UIUpgradeOffer.SetActive(false);
         UIPowerUpPlacement.SetActive(false);
-        playersIndex = playersIndex + 1 == players.Length ? 0 : playersIndex + 1;
+        playersIndex = playersIndex + 1 == players.Count ? 0 : playersIndex + 1;
 
         Invoke(nameof(StartTurn), 0);
     }
 
     private void IncreasePropertyOwnerMoney(int ownerID, int rent)
     {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in players)
         {
             PlayerInfo playerInfo = player.GetComponent<PlayerInfo>();

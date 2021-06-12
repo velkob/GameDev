@@ -26,6 +26,7 @@ public class BuildingHouse : MonoBehaviour
             house.GetComponent<PropertyInfo>().PlayerID = player.GetComponent<PlayerInfo>().GetID();
             house.GetComponent<PropertyInfo>().Rent = 10;
             PaintTheRooftop(house);
+            gameObject.GetComponent<PropertyInfo>().PlayerID = player.GetComponent<PlayerInfo>().GetID();
             gameObject.SetActive(false);
         };
     }

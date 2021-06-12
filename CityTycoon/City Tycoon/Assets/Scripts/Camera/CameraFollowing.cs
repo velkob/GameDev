@@ -1,7 +1,4 @@
-﻿//using System.Collections;
-//using System.Collections.Generic;
-//using UnityEngine;
-
+﻿using UnityEngine;
 //public class CameraFollowing : MonoBehaviour
 //{
 //    public float turnSpeed = 4.0f;
@@ -28,15 +25,11 @@
 //        }
 //    }
 //}
-
-using UnityEngine;
-using System.Collections;
-
 [AddComponentMenu("Camera-Control/Mouse Orbit with zoom")]
 public class CameraFollowing : MonoBehaviour
 {
 
-    public Transform player;
+    private Transform player;
     public float distance = 5.0f;
     public float xSpeed = 120.0f;
     public float ySpeed = 120.0f;
@@ -113,5 +106,10 @@ public class CameraFollowing : MonoBehaviour
         if (angle > 360F)
             angle -= 360F;
         return Mathf.Clamp(angle, min, max);
+    }
+
+    public void SetCurrentPlayer(Transform transform)
+    {
+        player = transform;
     }
 }

@@ -10,7 +10,8 @@ public class PlayerInfo : MonoBehaviour
 
     void Start()
     {
-        money = 5000;
+        GameOver.current.PlayerLoosesAction += DestroyObject;
+        money = 1000;
         id = GLOBAL_ID++;
         FindAndSetColor();
 
@@ -36,20 +37,35 @@ public class PlayerInfo : MonoBehaviour
     public void DecreaseMoney(int number)
     {
         money -= number;
+        if (money <= 0)
+        {
+            GameOver.current.PlayerLooses(id);
+        }
     }
 
     public void IncreaceMoney(int number)
     {
         money += number;
     }
-    
+
     public int GetID()
     {
         return id;
     }
-    
+
     public Color GetPlayerColor()
     {
         return playerColor;
+    }
+    private void DestroyObject(int id)
+    {
+        if (this.id == id)
+        {
+            Destroy(gameObject);
+        }
+    }
+    private void OnDestroy()
+    {
+        GameOver.current.PlayerLoosesAction -= DestroyObject;
     }
 }

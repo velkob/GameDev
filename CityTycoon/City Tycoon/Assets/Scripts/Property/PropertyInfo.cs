@@ -17,7 +17,29 @@ public class PropertyInfo : MonoBehaviour
 
     private void Start()
     {
+        GameOver.current.PlayerLoosesAction += DestroyHouses;
+        GameOver.current.PlayerLoosesAction += RestoreForSaleSigns;
         Price = 100;
         Id = GLOBAL_ID++;
+    }
+
+    private void DestroyHouses(int id)
+    {
+        if (id == PlayerID && !CompareTag("ForSale"))
+        {
+            Destroy(gameObject);
+        }
+    }
+    private void RestoreForSaleSigns(int id)
+    {
+        if (id == PlayerID && CompareTag("ForSale"))
+        {
+            gameObject.SetActive(true);
+        }
+    }
+    private void OnDestroy()
+    {
+        GameOver.current.PlayerLoosesAction -= DestroyHouses;
+        GameOver.current.PlayerLoosesAction -= RestoreForSaleSigns;
     }
 }
