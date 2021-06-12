@@ -8,6 +8,12 @@ public class SceneLoader : MonoBehaviour
 {
     public SceneAsset gameScene;
     public SceneAsset mainMenuScene;
+    public SceneAsset winningScene;
+
+    private void Start()
+    {
+        GameOver.current.EndGameAction += LoadWinningScreen;
+    }
     public void LoadGame()
     {
         SceneManager.LoadScene(gameScene.name);
@@ -16,6 +22,11 @@ public class SceneLoader : MonoBehaviour
     public void LoadMainMenu()
     {
         SceneManager.LoadScene(mainMenuScene.name);
+    }
+
+    public void LoadWinningScreen()
+    {
+        SceneManager.LoadScene(winningScene.name);
     }
 
     public void Exit()
