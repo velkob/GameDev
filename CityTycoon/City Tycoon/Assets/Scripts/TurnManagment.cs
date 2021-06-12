@@ -1,27 +1,31 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
 
 public class TurnManagment : MonoBehaviour
 {
     [SerializeField]
-    private GameObject rollButton;
+    private GameObject UIRollButton;
 
     [SerializeField]
-    private GameObject SaleOffer;
+    private GameObject UISaleOffer;
 
     [SerializeField]
-    private GameObject UpgradeOffer;
+    private GameObject UIUpgradeOffer;
 
     [SerializeField]
-    private GameObject InsufficentFunds;
+    private GameObject UIInsufficentFunds;
+
+    [SerializeField]
+    private GameObject UIPowerUpPlacement;
 
     [SerializeField]
     private GameObject Camera;
 
     [SerializeField]
     private GameObject[] players;
+
+    [SerializeField]
+    private GameObject[] powerups;
 
     private GameObject currentPlayer;
 
@@ -33,23 +37,22 @@ public class TurnManagment : MonoBehaviour
         StartTurn();
     }
 
-    public void StartTurn()
+    private void StartTurn()
     {
         currentPlayer = players[playersIndex];
         Camera.GetComponent<CameraFollowing>().player = currentPlayer.transform;
         RollDice();
     }
 
-    public void RollDice()
+    private void RollDice()
     {
-        rollButton.SetActive(true);
-
+        UIRollButton.SetActive(true);
         //rollButton calls MovePlayer();
     }
 
-    public void MovePlayer()
+    private void MovePlayer()
     {
-        rollButton.SetActive(false);
+        UIRollButton.SetActive(false);
 
         // calls Movement.Move()
         currentPlayer.GetComponent<Movement>().StartMoving();
@@ -57,32 +60,70 @@ public class TurnManagment : MonoBehaviour
         StartCoroutine(WaitForPlayerToStop());
     }
 
-    public void AfterMovementEvent()
+    private void AfterMovementEvent()
     {
         //Locate whats left of the player
         GameObject buildingOnTheLeft = currentPlayer.GetComponent<LocateObject>().GetObject();
         PlayerInfo playerInfo = currentPlayer.GetComponent<PlayerInfo>();
         PropertyInfo propertyInfo = buildingOnTheLeft.GetComponent<PropertyInfo>();
 
-        if (propertyInfo.PlayerID != -1 && playerInfo.GetID() != propertyInfo.PlayerID)
-        {
-            playerInfo.DecreaseMoney(propertyInfo.Rent);
-            IncreasePropertyOwnerMoney(propertyInfo.PlayerID, propertyInfo.Rent);
-            EndTurn();
-        }
-        else if (propertyInfo.PlayerID == -1 || playerInfo.GetID() == propertyInfo.PlayerID)
+        if (propertyInfo.PlayerID == -1)
         {
             if (buildingOnTheLeft.CompareTag("ForSale")) //if the building is ForSale sign
             {
-                SaleOffer.SetActive(true);
+                UISaleOffer.SetActive(true);
                 StartCoroutine(WaitForPlayerToChooseForSale()); //Waits for player to choose an option
             }
             else if (buildingOnTheLeft.CompareTag("Bank"))
             {
                 currentPlayer.GetComponent<PlayerInfo>().IncreaceMoney(1000);
-                EndTurn();
+                PowerUpPlacement();
+            }
+            else if (buildingOnTheLeft.CompareTag("SuperMarket"))
+            {
+                currentPlayer.GetComponent<PowerUps>().OwnedPowerUp = powerups[Random.Range(0, powerups.Length)];
+                PowerUpPlacement();
             }
         }
+        else if (propertyInfo.PlayerID != -1 && playerInfo.GetID() != propertyInfo.PlayerID)
+        {
+            playerInfo.DecreaseMoney(propertyInfo.Rent);
+            IncreasePropertyOwnerMoney(propertyInfo.PlayerID, propertyInfo.Rent);
+            PowerUpPlacement();
+        }
+        else if (playerInfo.GetID() == propertyInfo.PlayerID)
+        {
+            PowerUpPlacement();
+        }
+    }
+
+    private void PowerUpPlacement()
+    {
+        if (currentPlayer.GetComponent<PowerUps>().OwnedPowerUp != null)
+        {
+            UIPowerUpPlacement.SetActive(true);
+        }
+        StartCoroutine(WaitForPlayerToPlacePowerUp());
+    }
+
+    private IEnumerator WaitForPlayerToPlacePowerUp()
+    {
+        while (UIPowerUpPlacement.activeSelf)
+        {
+            yield return null;
+        }
+
+        EndTurn();
+    }
+
+    private void EndTurn()
+    {
+        UISaleOffer.SetActive(false);
+        UIUpgradeOffer.SetActive(false);
+        UIPowerUpPlacement.SetActive(false);
+        playersIndex = playersIndex + 1 == players.Length ? 0 : playersIndex + 1;
+
+        Invoke(nameof(StartTurn), 0);
     }
 
     private void IncreasePropertyOwnerMoney(int ownerID, int rent)
@@ -98,15 +139,6 @@ public class TurnManagment : MonoBehaviour
         }
     }
 
-    public void EndTurn()
-    {
-        SaleOffer.SetActive(false);
-        UpgradeOffer.SetActive(false);
-        playersIndex = playersIndex + 1 == players.Length ? 0 : playersIndex + 1;
-
-        Invoke(nameof(StartTurn), 0);
-    }
-
     private IEnumerator WaitForPlayerToStop()
     {
         while (currentPlayer.GetComponent<Movement>().isMoving)
@@ -119,7 +151,7 @@ public class TurnManagment : MonoBehaviour
 
     private IEnumerator WaitForPlayerToChooseForSale()
     {
-        while (SaleOffer.activeSelf)
+        while (UISaleOffer.activeSelf)
         {
             yield return null;
         }
@@ -129,15 +161,15 @@ public class TurnManagment : MonoBehaviour
             buildingOnTheLeft.GetComponent<Upgrade>().GetPrice() < currentPlayer.GetComponent<PlayerInfo>().getMoney() &&
             !buildingOnTheLeft.CompareTag("ForSale")) // check if the building has neighbours that belong to the same player and can be upgraded
         {
-            UpgradeOffer.SetActive(true); //Waits for player to Choose an option
+            UIUpgradeOffer.SetActive(true); //Waits for player to Choose an option
         }
 
-        while (UpgradeOffer.activeSelf || InsufficentFunds.activeSelf)
+        while (UIUpgradeOffer.activeSelf || UIInsufficentFunds.activeSelf)
         {
             yield return null;
         }
 
-        EndTurn();
+        PowerUpPlacement();
     }
 
     public void BuildHouse()
@@ -146,7 +178,7 @@ public class TurnManagment : MonoBehaviour
         int price = buildingOnTheLeft.GetComponent<PropertyInfo>().Price;
         if (price > currentPlayer.GetComponent<PlayerInfo>().getMoney())
         {
-            InsufficentFunds.SetActive(true);
+            UIInsufficentFunds.SetActive(true);
             return;
         }
         buildingOnTheLeft.GetComponent<BuildingHouse>().BuildAHouse();
@@ -159,11 +191,16 @@ public class TurnManagment : MonoBehaviour
         int price = buildingOnTheLeft.GetComponent<Upgrade>().GetPrice();
         if (price > currentPlayer.GetComponent<PlayerInfo>().getMoney())
         {
-            InsufficentFunds.SetActive(true);
+            UIInsufficentFunds.SetActive(true);
             return;
         }
         buildingOnTheLeft.GetComponent<Upgrade>().UpgradeBuilding();
         currentPlayer.GetComponent<PlayerInfo>().DecreaseMoney(price);
+    }
+
+    public void PlacePowerUP()
+    {
+        currentPlayer.GetComponent<PowerUps>().PlacePowerUp();
     }
 
     public GameObject GetCurrentPlayer()

@@ -156,7 +156,6 @@ public class Upgrade : MonoBehaviour
         {
             if (mat.name == "Roof (Instance)")
             {
-                Debug.Log(player.GetComponent<PlayerInfo>().GetPlayerColor());
                 mat.color = player.GetComponent<PlayerInfo>().GetPlayerColor();
             }
         }
