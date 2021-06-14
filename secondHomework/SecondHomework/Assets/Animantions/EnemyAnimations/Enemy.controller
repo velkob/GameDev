@@ -173,7 +173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9d99899b1a1d0545a6c1e52aab1c371, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpForce: 100
+  jumpForce: 400
 --- !u!1101 &3149596295730098694
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -212,7 +212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startJumping: 3
-  speed: 100
+  speed: 30
 --- !u!1101 &7204089187836872427
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
