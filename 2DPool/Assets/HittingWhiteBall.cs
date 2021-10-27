@@ -6,10 +6,7 @@ public class HittingWhiteBall : MonoBehaviour
 {
     [SerializeField]
     private GameObject whiteBall;
-    void Start()
-    {
-        //gameObject.GetComponent<SpriteRenderer>().enabled = false;
-    }
+  
 
     void Update()
     {
@@ -19,7 +16,7 @@ public class HittingWhiteBall : MonoBehaviour
         }
         else
         {
-            //gameObject.GetComponent<SpriteRenderer>().enabled = false;
+            gameObject.GetComponent<SpriteRenderer>().enabled = false;
         }
     }
 }
