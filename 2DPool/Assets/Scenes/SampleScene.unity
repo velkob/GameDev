@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e967400d46241624097921ec34bce214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  whiteBall: {fileID: 0}
+  whiteBall: {fileID: 1071531000}
 --- !u!212 &450687767
 SpriteRenderer:
   m_ObjectHideFlags: 0

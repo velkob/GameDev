@@ -33,7 +33,7 @@ public class BallMovement : MonoBehaviour
         }
     }
 
-    private void Accelerate(int force, Vector3 direction)
+    public void Accelerate(float force, Vector3 direction)
     {
         acceleration = force / mass;
         this.direction = direction;
