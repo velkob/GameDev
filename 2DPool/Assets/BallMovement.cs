@@ -31,11 +31,31 @@ public class BallMovement : MonoBehaviour
             acceleration -= 0.01f;
             transform.position += direction * acceleration;
         }
+        if (acceleration <= 0.0001f)
+        {
+            acceleration = 0;
+            atPeace = true;
+        }
     }
 
     public void Accelerate(float force, Vector3 direction)
     {
-        acceleration = force / mass;
+        acceleration += force / mass;
         this.direction = direction;
+    }
+
+    public void SetDirection(Vector3 newDirection)
+    {
+        direction = newDirection;
+    }
+
+    public bool getAtPeace()
+    {
+        return atPeace;
+    }
+
+    public Vector3 getDirection()
+    {
+        return direction;
     }
 }

@@ -17,6 +17,10 @@ public class HittingWhiteBall : MonoBehaviour
         }
         else if (Input.GetMouseButtonUp(0))
         {
+            if (force > 7)
+            {
+                force = 7;
+            }
             whiteBall.GetComponent<BallMovement>().Accelerate(force,-(transform.position - whiteBall.transform.position));
             force = 0;
         }
