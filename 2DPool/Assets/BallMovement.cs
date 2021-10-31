@@ -9,7 +9,7 @@ public class BallMovement : MonoBehaviour
     private float mass;
 
     [SerializeField]
-    private float acceleration;
+    private float velocity;
 
     [SerializeField]
     private Vector3 direction;
@@ -18,29 +18,29 @@ public class BallMovement : MonoBehaviour
 
     void Start()
     {
-        //acceleration = 0;
+        //velocity = 0;
         atPeace = true;
         mass = 8;
     }
 
     void FixedUpdate()
     {
-        if (acceleration > 0)
+        if (velocity > 0)
         {
             atPeace = false;
-            acceleration -= 0.01f;
-            transform.position += direction * acceleration;
+            velocity -= 0.01f;
+            transform.position += direction * velocity;
         }
-        if (acceleration <= 0.0001f)
+        if (velocity <= 0.0001f)
         {
-            acceleration = 0;
+            velocity = 0;
             atPeace = true;
         }
     }
 
     public void Accelerate(float force, Vector3 direction)
     {
-        acceleration += force / mass;
+        velocity += force / mass;
         this.direction = direction;
     }
 
