@@ -49,7 +49,7 @@ public class CollisionDetection : MonoBehaviour
         walls = new Vector2[4, 2];
         for (int i = 0; i < 4; i++)
         {
-            GameObject wall = new GameObject("wall"+i);
+            GameObject wall = new GameObject("wall" + i);
             tableWalls.Add(wall);
         }
         CalculateWalls();
@@ -63,13 +63,13 @@ public class CollisionDetection : MonoBehaviour
                 GameObject collider = CheckForCollision(ball);
                 if (tableWalls.Contains(collider))
                 {
-                    CalculateHitWithTable(ball,tableWalls.IndexOf(collider));
+                    CalculateHitWithTable(ball, tableWalls.IndexOf(collider));
                 }
             }
         }
     }
 
-    private void CalculateHitWithTable(GameObject ball,int wallNumber)
+    private void CalculateHitWithTable(GameObject ball, int wallNumber)
     {
         Vector3 directionOfBall = ball.GetComponent<BallMovement>().getDirection();
         Vector3 newDirection;
@@ -89,29 +89,39 @@ public class CollisionDetection : MonoBehaviour
         Vector3 pos = ball.transform.position;
         foreach (GameObject secondBall in balls)
         {
-            if (Vector3.Distance(pos,secondBall.transform.position) < 1 && secondBall != ball)
+            if (Vector3.Distance(pos, secondBall.transform.position) < 1 && secondBall != ball)
             {
                 return secondBall;
             }
         }
-
-        for (int i = 0; i < 4; ++i)
+        
+        for (int i = 0; i < 2; ++i)
         {
-            if (PointToLineDistance(pos,walls[i,0],walls[i,1]) < 0.5)
+            if (CheckIfInsideTheTable(pos, walls[i, 1], walls[i, 0]))
             {
-                Debug.Log(i);
                 return tableWalls[i];
             }
+
+            //if (PointToLineDistance(pos,walls[i,0],walls[i,1]) <= 0.25)
+            //{
+            //    return tableWalls[i];
+            //}
         }
 
         return null;
     }
 
-    private float PointToLineDistance(Vector3 point,Vector3 lineStart,Vector3 lineEnd)
+    private float PointToLineDistance(Vector3 point, Vector3 lineStart, Vector3 lineEnd)
     {
         Vector3 firstVector = point - lineStart;
         Vector3 secondVector = lineEnd - lineStart;
 
         return Vector3.Cross(firstVector, secondVector).magnitude / secondVector.magnitude;
+    }
+    private bool CheckIfInsideTheTable(Vector3 point, Vector3 lineStart, Vector3 lineEnd)
+    {
+
+        //return Vector3.Cross(point - lineStart, lineEnd - lineStart) > 0;
+        //return ((point.x - lineStart.x)*(lineEnd.y - lineStart.y) - (point.y - lineStart.y)*(lineEnd.x - lineStart.x)) > 0;
     }
 }
