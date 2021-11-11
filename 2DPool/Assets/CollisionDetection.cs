@@ -6,7 +6,7 @@ using UnityEngine;
 public class CollisionDetection : MonoBehaviour
 {
     [SerializeField]
-    private GameObject[] balls;
+    private List<GameObject> balls;
 
     private List<GameObject> tableWalls;
 
@@ -58,54 +58,54 @@ public class CollisionDetection : MonoBehaviour
     {
         foreach (GameObject ball in balls)
         {
-            if (!ball.GetComponent<BallMovement>().getAtPeace())
+            BallMovement ballMovement = ball.GetComponent<BallMovement>();
+            if (!ballMovement.getAtPeace())
             {
                 GameObject collider = CheckForCollision(ball);
-                if (tableWalls.Contains(collider))
+                if (collider == null)
                 {
-                    CalculateHitWithTable(ball, tableWalls.IndexOf(collider));
+                    return;
+                }
+                else if (tableWalls.Contains(collider))
+                {
+                    ballMovement.CalculateMovementAfterWallHit(tableWalls.IndexOf(collider));
+                }
+                else if (balls.Contains(collider))
+                {
+                    ballMovement.CalculateMovementAfterBallHit(collider);
                 }
             }
         }
+
+
     }
 
-    private void CalculateHitWithTable(GameObject ball, int wallNumber)
-    {
-        Vector3 directionOfBall = ball.GetComponent<BallMovement>().getDirection();
-        Vector3 newDirection;
-        if (wallNumber == 1 || wallNumber == 2)
-        {
-            newDirection = new Vector3(-directionOfBall.x, directionOfBall.y, directionOfBall.z);
-        }
-        else
-        {
-            newDirection = new Vector3(directionOfBall.x, -directionOfBall.y, directionOfBall.z);
-        }
-        ball.GetComponent<BallMovement>().SetDirection(newDirection);
-    }
+
 
     private GameObject CheckForCollision(GameObject ball)
     {
         Vector3 pos = ball.transform.position;
         foreach (GameObject secondBall in balls)
         {
-            if (Vector3.Distance(pos, secondBall.transform.position) < 1 && secondBall != ball)
+            if (Vector3.Distance(pos, secondBall.transform.position) <= 0.5 && secondBall != ball)
             {
                 return secondBall;
             }
         }
-        
-        for (int i = 0; i < 2; ++i)
-        {
-            if (CheckIfInsideTheTable(pos, walls[i, 1], walls[i, 0]))
-            {
-                return tableWalls[i];
-            }
 
-            //if (PointToLineDistance(pos,walls[i,0],walls[i,1]) <= 0.25)
-            //{
-            //    return tableWalls[i];
-            //}
+        if (CheckIfInsideTheTable(pos))
+        {
+            for (int i = 0; i < 4; ++i)
+            {
+                if (PointToLineDistance(pos, walls[i, 0], walls[i, 1]) <= 0.25)
+                {
+                    return tableWalls[i];
+                }
+            }
+        }
+        else
+        {
+            //ball.transform.position = new Vector3(3, 5, -0.1f);
         }
 
         return null;
@@ -118,10 +118,39 @@ public class CollisionDetection : MonoBehaviour
 
         return Vector3.Cross(firstVector, secondVector).magnitude / secondVector.magnitude;
     }
-    private bool CheckIfInsideTheTable(Vector3 point, Vector3 lineStart, Vector3 lineEnd)
-    {
 
-        //return Vector3.Cross(point - lineStart, lineEnd - lineStart) > 0;
-        //return ((point.x - lineStart.x)*(lineEnd.y - lineStart.y) - (point.y - lineStart.y)*(lineEnd.x - lineStart.x)) > 0;
+    private bool CheckIfInsideTheTable(Vector3 point)
+    {
+        int counter = 0;
+        for (int i = 1; i < 3; i++)
+        {
+            if (DoIntersect(point, point + new Vector3(20, 0, 0), walls[i, 0], walls[i, 1]))
+            {
+                counter++;
+            }
+        }
+        return counter % 2 == 1;
+    }
+
+    private bool DoIntersect(Vector3 p1, Vector3 q1, Vector3 p2, Vector3 q2)
+    {
+        int o2 = Orientation(p1, q1, q2);
+        int o3 = Orientation(p2, q2, p1);
+        int o1 = Orientation(p1, q1, p2);
+        int o4 = Orientation(p2, q2, q1);
+
+        if (o1 != o2 && o3 != o4)
+            return true;
+
+        return false;
+    }
+    private int Orientation(Vector3 p, Vector3 q, Vector3 r)
+    {
+       float val = (q.y - p.y) * (r.x - q.x) -
+                (q.x - p.x) * (r.y - q.y);
+
+        if (val == 0) return 0; 
+
+        return (val > 0) ? 1 : 2;
     }
 }

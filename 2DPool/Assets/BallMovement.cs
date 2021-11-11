@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,39 +10,58 @@ public class BallMovement : MonoBehaviour
     private float mass;
 
     [SerializeField]
-    private float velocity;
+    private float elasticity;
+
+    [SerializeField]
+    private float speed;
 
     [SerializeField]
     private Vector3 direction;
- 
+
     private bool atPeace;
 
     void Start()
     {
-        //velocity = 0;
         atPeace = true;
-        mass = 8;
+        mass = 1;
     }
 
     void FixedUpdate()
     {
-        if (velocity > 0)
+        if (speed > 0)
         {
             atPeace = false;
-            velocity -= 0.01f;
-            transform.position += direction * velocity;
+            speed -= 0.005f;
+            transform.position += direction * speed;
         }
-        if (velocity <= 0.0001f)
+        if (speed <= 0.0001f)
         {
-            velocity = 0;
+            speed = 0;
             atPeace = true;
         }
     }
 
-    public void Accelerate(float force, Vector3 direction)
+    public void CalculateMovementAfterWallHit(int wallNumber)
     {
-        velocity += force / mass;
-        this.direction = direction;
+        Vector3 newDirection;
+        if (wallNumber == 1 || wallNumber == 2)
+        {
+            newDirection = new Vector3(-direction.x, direction.y, direction.z);
+        }
+        else
+        {
+            newDirection = new Vector3(direction.x, -direction.y, direction.z);
+        }
+
+        float newSpeed = speed * elasticity;
+
+        SetSpeedAndDirection(newSpeed, newDirection);
+    }
+
+    public void SetSpeedAndDirection(float newSpeed, Vector3 newDirection)
+    {
+        speed = newSpeed;
+        direction = newDirection;
     }
 
     public void SetDirection(Vector3 newDirection)
@@ -57,5 +77,25 @@ public class BallMovement : MonoBehaviour
     public Vector3 getDirection()
     {
         return direction;
+    }
+
+    public float getElasticity()
+    {
+        return elasticity;
+    }
+
+    public float getSpeed()
+    {
+        return speed;
+    }
+
+    public float getMass()
+    {
+        return mass;
+    }
+
+    internal void CalculateMovementAfterBallHit(GameObject collider)
+    {
+
     }
 }
