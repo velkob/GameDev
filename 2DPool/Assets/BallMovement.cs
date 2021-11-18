@@ -44,7 +44,7 @@ public class BallMovement : MonoBehaviour
     public void CalculateMovementAfterWallHit(int wallNumber)
     {
         Vector3 newDirection;
-        if (wallNumber == 1 || wallNumber == 2)
+        if (wallNumber == 0 || wallNumber == 1)
         {
             newDirection = new Vector3(-direction.x, direction.y, direction.z);
         }
@@ -94,8 +94,14 @@ public class BallMovement : MonoBehaviour
         return mass;
     }
 
-    internal void CalculateMovementAfterBallHit(GameObject collider)
+    internal void CalculateMovementAfterBallHit(GameObject secondBall)
     {
+        Vector3 pos = transform.position;
+        Vector3 secondBallPos = secondBall.transform.position;
 
+        Vector2 normalVector = new Vector2(secondBallPos.x - pos.x, secondBallPos.y - pos.y);
+        Vector2 unitNormalVector = normalVector / normalVector.magnitude;
+        Vector2 unitTangentVector = new Vector2(-unitNormalVector.y, unitNormalVector.x);
+        
     }
 }
