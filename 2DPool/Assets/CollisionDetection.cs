@@ -30,12 +30,14 @@ public class CollisionDetection : MonoBehaviour
         foreach (GameObject ball in balls)
         {
             BallMovement ballMovement = ball.GetComponent<BallMovement>();
+          
             if (!ballMovement.getAtPeace())
             {
                 GameObject collider = CheckForCollision(ball);
+
                 if (collider == null)
                 {
-                    return;
+                    continue;
                 }
                 else if (tableWalls.Contains(collider))
                 {
@@ -56,7 +58,7 @@ public class CollisionDetection : MonoBehaviour
     private GameObject CheckForCollision(GameObject ball)
     {
         Vector3 pos = ball.transform.position;
-
+   
         if (pos.x - BALL_RADIUS < tableCorners[0].x)
         {
             ball.transform.position = new Vector3(tableCorners[0].x + BALL_RADIUS, pos.y, pos.z);
@@ -80,8 +82,12 @@ public class CollisionDetection : MonoBehaviour
 
         foreach (GameObject secondBall in balls)
         {
-            if (Vector3.Distance(pos, secondBall.transform.position) <= 0.5 && secondBall != ball)
+            if (Vector3.Distance(pos, secondBall.transform.position) <= BALL_RADIUS * 2 && secondBall != ball)
             {
+                Vector3 dist = ball.transform.position - secondBall.transform.position;
+                Vector3 mtd = dist * ((BALL_RADIUS * 2 - dist.magnitude) / dist.magnitude);
+                ball.transform.position += mtd / 2;
+                secondBall.transform.position -= mtd / 2;
                 return secondBall;
             }
         }

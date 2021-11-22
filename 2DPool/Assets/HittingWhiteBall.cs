@@ -10,19 +10,19 @@ public class HittingWhiteBall : MonoBehaviour
     private float force;
     void Update()
     {
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) && whiteBall.GetComponent<BallMovement>().getAtPeace())
         {
             gameObject.GetComponent<SpriteRenderer>().enabled = true;
             force += 0.01f;
         }
-        else if (Input.GetMouseButtonUp(0))
+        else if (Input.GetMouseButtonUp(0) && whiteBall.GetComponent<BallMovement>().getAtPeace())
         {
             BallMovement ballMovement = whiteBall.GetComponent<BallMovement>();
-            if (force > 1f)
+            if (force > 0.5f)
             {
-                force = 1f;
+                force = 0.5f;
             }
-            ballMovement.SetSpeedAndDirection(force / ballMovement.getMass(), -(transform.position - whiteBall.transform.position).normalized);
+            ballMovement.SetVelocity(-(force / ballMovement.getMass())*((transform.position - whiteBall.transform.position).normalized));
             force = 0;
         }
         else

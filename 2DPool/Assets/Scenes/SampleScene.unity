@@ -458,10 +458,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d9fc24511ae2804bbd964481e8fcf60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 3
+  mass: 1
   elasticity: 0.8
-  speed: 0
-  direction: {x: 0, y: 0, z: 0}
+  velocity: {x: 0, y: 0}
 --- !u!212 &1071531002
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -558,10 +557,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d9fc24511ae2804bbd964481e8fcf60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 0.9
-  elasticity: 0.8
-  speed: 0
-  direction: {x: 0, y: 0, z: 0}
+  mass: 0
+  elasticity: 0
+  velocity: {x: 0, y: 0}
 --- !u!212 &1526517086
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -658,6 +656,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   balls:
   - {fileID: 1071531000}
+  - {fileID: 1526517084}
   tableCorners:
   - {x: 0, y: 0}
   - {x: 6, y: 0}

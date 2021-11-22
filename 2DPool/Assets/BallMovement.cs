@@ -13,60 +13,111 @@ public class BallMovement : MonoBehaviour
     private float elasticity;
 
     [SerializeField]
-    private float speed;
+    private Vector2 velocity;
 
     [SerializeField]
-    private Vector3 direction;
-
     private bool atPeace;
+
+    private const float velocityIncrement = 0.0005f;
+    private const float velocityCap = 0.001f;
 
     void Start()
     {
+        velocity = new Vector2(0, 0);
         atPeace = true;
-        mass = 1;
     }
 
     void FixedUpdate()
     {
-        if (speed > 0)
+        if (velocity.x != 0 || velocity.y != 0)
         {
             atPeace = false;
-            speed -= 0.005f;
-            transform.position += direction * speed;
+            transform.position += new Vector3(velocity.x, velocity.y, 0);
+            if (velocity.x != 0)
+            {
+                velocity.x += velocity.x > 0 ? -velocityIncrement : velocityIncrement;
+            }
+            if (velocity.y != 0)
+            {
+                velocity.y += velocity.y > 0 ? -velocityIncrement : velocityIncrement;
+            }
+            if ((velocity.x < velocityCap && velocity.x > 0) || (velocity.x > -velocityCap && velocity.x < 0))
+            {
+                velocity.x = 0;
+            }
+            if ((velocity.y < velocityCap && velocity.y > 0) || (velocity.y > -velocityCap && velocity.y < 0))
+            {
+                velocity.y = 0;
+            }
         }
-        if (speed <= 0.0001f)
+        if (velocity.x == 0 && velocity.y == 0)
         {
-            speed = 0;
             atPeace = true;
         }
     }
 
     public void CalculateMovementAfterWallHit(int wallNumber)
     {
-        Vector3 newDirection;
         if (wallNumber == 0 || wallNumber == 1)
         {
-            newDirection = new Vector3(-direction.x, direction.y, direction.z);
+            velocity.x = -velocity.x;
         }
         else
         {
-            newDirection = new Vector3(direction.x, -direction.y, direction.z);
+            velocity.y = -velocity.y;
         }
 
-        float newSpeed = speed * elasticity;
-
-        SetSpeedAndDirection(newSpeed, newDirection);
+        velocity *= elasticity;
     }
 
-    public void SetSpeedAndDirection(float newSpeed, Vector3 newDirection)
+    public void CalculateMovementAfterBallHit(GameObject secondBall)
     {
-        speed = newSpeed;
-        direction = newDirection;
-    }
+        BallMovement secondBallMovement = secondBall.GetComponent<BallMovement>();
+        
+        Vector3 pos = transform.position;
+        Vector3 secondBallPos = secondBall.transform.position;
+        Vector3 velocitySecondBall = secondBallMovement.GetVelocity();
+        
+        Vector2 normalVector = new Vector2(secondBallPos.x - pos.x, secondBallPos.y - pos.y);
+        Vector2 unitNormalVector = normalVector / normalVector.magnitude;
+        Vector2 unitTangentVector = new Vector2(-unitNormalVector.y, unitNormalVector.x);
 
-    public void SetDirection(Vector3 newDirection)
-    {
-        direction = newDirection;
+        float v1n = Vector2.Dot(unitNormalVector, velocity);
+        float v1t = Vector2.Dot(unitTangentVector, velocity);
+        float v2n = Vector2.Dot(unitNormalVector, velocitySecondBall);
+        float v2t = Vector2.Dot(unitTangentVector, velocitySecondBall);
+
+        Vector2 v1nTang = v2n * unitNormalVector;
+        Vector2 v2nTang = v1n * unitNormalVector;
+
+        Vector2 v1tTang = unitTangentVector * v1t;
+        Vector2 v2tTang = unitTangentVector * v2t;
+
+        velocity = v1nTang + v1tTang;
+        velocity *= elasticity;
+        secondBallMovement.SetVelocity((v2nTang + v2tTang)*secondBallMovement.getElasticity());
+
+        //float finalVelocity1 = (v1n * (mass - massSecondBall) + 2 * massSecondBall * v2n) / mass + massSecondBall;
+        //float finalVelocity2 = (v2n * (massSecondBall - mass) + 2 * mass * v1n) / mass + massSecondBall;
+
+        //float power = (Math.Abs(pos.x) + Math.Abs(pos.y)) + (Math.Abs(secondBallPos.x) + Math.Abs(secondBallPos.y));
+        //power *= 0.00482f;
+        //float opposite = -(pos.y - secondBallPos.y);
+        //float adjacent = -(pos.x - secondBallPos.x);
+        //float rotation = Mathf.Atan2(opposite, adjacent) * Mathf.Rad2Deg;
+
+        //BallMovement secondBallMovement = secondBall.GetComponent<BallMovement>();
+        //secondBallMovement.SetAtPeace(false);
+        //direction += new Vector3(90 * (float)Math.Cos(rotation + Math.PI) * power, 90 * (float)Math.Sin(rotation + Math.PI) * power, velocity.z).normalized;
+        //velocity *= 0.95f;
+        //speed /= 2;
+
+
+        //secondBallMovement.SetSpeedAndDirection(speed,(secondBallMovement.GetVelocity() +
+        //    (new Vector3(90 * (float)Math.Cos(rotation) * power,
+        //    90 * (float)Math.Sin(rotation) * power,
+        //    velocity.z)).normalized));
+
     }
 
     public bool getAtPeace()
@@ -74,19 +125,9 @@ public class BallMovement : MonoBehaviour
         return atPeace;
     }
 
-    public Vector3 getDirection()
-    {
-        return direction;
-    }
-
     public float getElasticity()
     {
         return elasticity;
-    }
-
-    public float getSpeed()
-    {
-        return speed;
     }
 
     public float getMass()
@@ -94,14 +135,13 @@ public class BallMovement : MonoBehaviour
         return mass;
     }
 
-    internal void CalculateMovementAfterBallHit(GameObject secondBall)
+    public void SetVelocity(Vector3 newVelocity)
     {
-        Vector3 pos = transform.position;
-        Vector3 secondBallPos = secondBall.transform.position;
+        velocity = newVelocity;
+    }
 
-        Vector2 normalVector = new Vector2(secondBallPos.x - pos.x, secondBallPos.y - pos.y);
-        Vector2 unitNormalVector = normalVector / normalVector.magnitude;
-        Vector2 unitTangentVector = new Vector2(-unitNormalVector.y, unitNormalVector.x);
-        
+    public Vector3 GetVelocity()
+    {
+        return velocity;
     }
 }
