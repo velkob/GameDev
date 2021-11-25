@@ -18,8 +18,11 @@ public class BallMovement : MonoBehaviour
     [SerializeField]
     private bool atPeace;
 
-    private const float velocityIncrement = 0.0005f;
-    private const float velocityCap = 0.001f;
+    [SerializeField]
+    private Vector3 whiteballStartingPos;
+
+    private const float VELOCITY_INCREMENT = 0.0005f;
+    private const float VELOCITY_CAP = 0.001f;
 
     void Start()
     {
@@ -35,17 +38,17 @@ public class BallMovement : MonoBehaviour
             transform.position += new Vector3(velocity.x, velocity.y, 0);
             if (velocity.x != 0)
             {
-                velocity.x += velocity.x > 0 ? -velocityIncrement : velocityIncrement;
+                velocity.x += velocity.x > 0 ? -VELOCITY_INCREMENT : VELOCITY_INCREMENT;
             }
             if (velocity.y != 0)
             {
-                velocity.y += velocity.y > 0 ? -velocityIncrement : velocityIncrement;
+                velocity.y += velocity.y > 0 ? -VELOCITY_INCREMENT : VELOCITY_INCREMENT;
             }
-            if ((velocity.x < velocityCap && velocity.x > 0) || (velocity.x > -velocityCap && velocity.x < 0))
+            if ((velocity.x < VELOCITY_CAP && velocity.x > 0) || (velocity.x > -VELOCITY_CAP && velocity.x < 0))
             {
                 velocity.x = 0;
             }
-            if ((velocity.y < velocityCap && velocity.y > 0) || (velocity.y > -velocityCap && velocity.y < 0))
+            if ((velocity.y < VELOCITY_CAP && velocity.y > 0) || (velocity.y > -VELOCITY_CAP && velocity.y < 0))
             {
                 velocity.y = 0;
             }
@@ -77,6 +80,7 @@ public class BallMovement : MonoBehaviour
         Vector3 pos = transform.position;
         Vector3 secondBallPos = secondBall.transform.position;
         Vector3 velocitySecondBall = secondBallMovement.GetVelocity();
+        float massSecondBall = secondBallMovement.getMass();
         
         Vector2 normalVector = new Vector2(secondBallPos.x - pos.x, secondBallPos.y - pos.y);
         Vector2 unitNormalVector = normalVector / normalVector.magnitude;
@@ -87,37 +91,25 @@ public class BallMovement : MonoBehaviour
         float v2n = Vector2.Dot(unitNormalVector, velocitySecondBall);
         float v2t = Vector2.Dot(unitTangentVector, velocitySecondBall);
 
-        Vector2 v1nTang = v2n * unitNormalVector;
-        Vector2 v2nTang = v1n * unitNormalVector;
+        float finalVelocity1 = (v1n * (mass - massSecondBall) + 2 * massSecondBall * v2n) / (mass + massSecondBall);
+        float finalVelocity2 = (v2n * (massSecondBall - mass) + 2 * mass * v1n) / (mass + massSecondBall);
+        
+        Vector2 v1nTang = finalVelocity1 * unitNormalVector;
+        Vector2 v2nTang = finalVelocity2 * unitNormalVector;
 
         Vector2 v1tTang = unitTangentVector * v1t;
         Vector2 v2tTang = unitTangentVector * v2t;
 
-        velocity = v1nTang + v1tTang;
-        velocity *= elasticity;
+        velocity = (v1nTang + v1tTang)*elasticity;
         secondBallMovement.SetVelocity((v2nTang + v2tTang)*secondBallMovement.getElasticity());
 
-        //float finalVelocity1 = (v1n * (mass - massSecondBall) + 2 * massSecondBall * v2n) / mass + massSecondBall;
-        //float finalVelocity2 = (v2n * (massSecondBall - mass) + 2 * mass * v1n) / mass + massSecondBall;
 
-        //float power = (Math.Abs(pos.x) + Math.Abs(pos.y)) + (Math.Abs(secondBallPos.x) + Math.Abs(secondBallPos.y));
-        //power *= 0.00482f;
-        //float opposite = -(pos.y - secondBallPos.y);
-        //float adjacent = -(pos.x - secondBallPos.x);
-        //float rotation = Mathf.Atan2(opposite, adjacent) * Mathf.Rad2Deg;
+    }
 
-        //BallMovement secondBallMovement = secondBall.GetComponent<BallMovement>();
-        //secondBallMovement.SetAtPeace(false);
-        //direction += new Vector3(90 * (float)Math.Cos(rotation + Math.PI) * power, 90 * (float)Math.Sin(rotation + Math.PI) * power, velocity.z).normalized;
-        //velocity *= 0.95f;
-        //speed /= 2;
-
-
-        //secondBallMovement.SetSpeedAndDirection(speed,(secondBallMovement.GetVelocity() +
-        //    (new Vector3(90 * (float)Math.Cos(rotation) * power,
-        //    90 * (float)Math.Sin(rotation) * power,
-        //    velocity.z)).normalized));
-
+    public void ResetWhiteBall()
+    {
+        transform.position = whiteballStartingPos;
+        velocity = new Vector2(0, 0);
     }
 
     public bool getAtPeace()
